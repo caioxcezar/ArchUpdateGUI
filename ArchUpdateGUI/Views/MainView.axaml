@@ -1,0 +1,46 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:i="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="ArchUpdateGUI.Views.MainView">
+    <DockPanel Margin="5">
+        <Grid DockPanel.Dock="Top" ColumnDefinitions="1*, 8*, .5*, .5*, .5*" RowDefinitions="Auto,Auto,Auto,Auto,Auto"  Margin="4">
+            <ComboBox Grid.Row="0" Grid.Column="0" Items="{Binding Providers}" SelectedItem="{Binding Provider}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Name}"/>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding SearchParam}"  Watermark="Package Name" />
+            <Button Height="32" Command="{Binding Search}" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Center"><i:Icon Value="fa fa-search" /></Button>
+            <Button Height="32" Command="{Binding OpenConfig}" Grid.Row="0" Grid.Column="3" HorizontalAlignment="Right"><i:Icon Value="fa fa-cog" /></Button>
+            <Button Height="32" Command="{Binding SystemUpdate}" Grid.Row="0" Grid.Column="4" HorizontalAlignment="Right"><i:Icon Value="fa fa-sync" /></Button>
+        </Grid>
+        <StackPanel DockPanel.Dock="Bottom">
+            <Border         
+                BorderBrush="Black"
+                BorderThickness="1"
+                CornerRadius="3"
+                Padding="4"
+            >
+                <ScrollViewer Height="300">
+                    <TextBlock Text="{Binding PackageInfo}"/>
+                </ScrollViewer>
+            </Border>
+            <!-- TODO habilitar button -->
+            <Button Command="{Binding PackageCommand}" Content="{Binding CommandText}" IsVisible="{Binding CommandVisibility}"/>
+            <Label Content="{Binding Info}"/>
+        </StackPanel>
+        <DataGrid SelectedItem="{Binding SelectedPackage}" SelectionMode="Single" AutoGenerateColumns="False" Items="{Binding Packages}">
+            <DataGrid.Columns>
+                <DataGridCheckBoxColumn IsReadOnly="True" Header="IsInstalled" Binding="{Binding IsInstalled}"/>
+                <DataGridTextColumn IsReadOnly="True" Header="Repository" Binding="{Binding Repository}"/>
+                <DataGridTextColumn IsReadOnly="True" Width=".1*" Header="Name" Binding="{Binding Name}"/>
+                <DataGridTextColumn IsReadOnly="True" Header="Version" Binding="{Binding Version}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</UserControl>
