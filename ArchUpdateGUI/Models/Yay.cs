@@ -1,21 +1,24 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Security;
 using System.Threading.Tasks;
-using ArchUpdateGUI.Utils;
 
 namespace ArchUpdateGUI.Models;
 
 public class Yay : IProvider
 {
     public string Name => "Yay - AUR Helper";
-    public List<Package> Packages { get; }
-    public int Installed { get; }
-    public int Total { get; }
-    
-    public Yay()
+    public bool RootRequired => true;
+    public List<Package> Packages { get; private set; }
+    public int Installed { get; private set; }
+    public int Total { get; private set; }
+
+    public Yay() => Load();
+    public void Load()
     {
-        Packages = new();
+        Packages = new(); 
         var result = Command.Run("yay -Sl");
         if (result.ExitCode != 0) throw new CommandException(result.Error);
         string[] list = result.Output.Split('\n');
@@ -34,29 +37,23 @@ public class Yay : IProvider
         }
 
         Installed = Packages.Count(p => p.IsInstalled);
-        Total = Packages.Count;
+        Total = Packages.Count;    
     }
-    public string Search(Package package)
+    public string PackageInfo(Package package)
     {
         var result = Command.Run($"yay -Si {package.Name}");
         if (result.ExitCode != 0) throw new CommandException(result.Error);
         return result.Output;
     }
 
-    public void Install(Package package)
-    {
-        var result = Command.Run($"yay -Ss {package.Name}"); //TODO
-        if (result.ExitCode != 0) throw new CommandException(result.Error);
-    }
+    public Task<int> Install(SecureString? pass, Package package, Action<string?> output, Action<string?> error) =>
+        Command.Run($"echo {pass!.SecureToString()} | sudo -S su && yay -Ss {package.Name} --noconfirm", output, error);
 
-    public void Remove(Package package)
-    {
-        var result = Command.Run($"yay -Rs {package.Name}"); //TODO
-        if (result.ExitCode != 0) throw new CommandException(result.Error);
-    }
+    public Task<int> Remove(SecureString? pass, Package package, Action<string?> output, Action<string?> error) =>
+        Command.Run($"echo {pass!.SecureToString()} | sudo -S su && yay -Rs {package.Name} --noconfirm", output, error);
 
-    public Task<int> Update(Action<string?> output, Action<string?> error) =>
-        Command.Run("printf '%s\n' <PASSWORD> | yay -Syu --noconfirm", output, error); //TODO
+    public Task<int> Update(SecureString? pass, Action<string?> output, Action<string?> error) =>
+        Command.Run($"echo {pass!.SecureToString()} | sudo -S su && yay -Syu --noconfirm", output, error);
 
     public Command Version() => Command.Run("yay --version");
 }

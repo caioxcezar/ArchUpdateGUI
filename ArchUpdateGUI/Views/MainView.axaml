@@ -7,14 +7,14 @@
              x:Class="ArchUpdateGUI.Views.MainView">
     <DockPanel Margin="5">
         <Grid DockPanel.Dock="Top" ColumnDefinitions="1*, 8*, .5*, .5*, .5*" RowDefinitions="Auto,Auto,Auto,Auto,Auto"  Margin="4">
-            <ComboBox Grid.Row="0" Grid.Column="0" Items="{Binding Providers}" SelectedItem="{Binding Provider}">
+            <ComboBox Margin="0,0,5,0" Grid.Row="0" Grid.Column="0" Items="{Binding Providers}" SelectedItem="{Binding Provider}">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding Name}"/>
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
             </ComboBox>
-            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding SearchParam}"  Watermark="Package Name" />
+            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding SearchParam}"  Watermark="Package Name" FontFamily="Assets/Hack_Regular_Nerd Font_Complete_Mono.ttf"/>
             <Button Height="32" Command="{Binding Search}" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Center"><i:Icon Value="fa fa-search" /></Button>
             <Button Height="32" Command="{Binding OpenConfig}" Grid.Row="0" Grid.Column="3" HorizontalAlignment="Right"><i:Icon Value="fa fa-cog" /></Button>
             <Button Height="32" Command="{Binding SystemUpdate}" Grid.Row="0" Grid.Column="4" HorizontalAlignment="Right"><i:Icon Value="fa fa-sync" /></Button>
@@ -30,8 +30,7 @@
                     <TextBlock Text="{Binding PackageInfo}"/>
                 </ScrollViewer>
             </Border>
-            <!-- TODO habilitar button -->
-            <Button Command="{Binding PackageCommand}" Content="{Binding CommandText}" IsVisible="{Binding CommandVisibility}"/>
+            <Button IsEnabled="{Binding CommandVisibility}" Command="{Binding CommandAction}" Content="{Binding CommandText}" IsVisible="{Binding CommandVisibility}"/>
             <Label Content="{Binding Info}"/>
         </StackPanel>
         <DataGrid SelectedItem="{Binding SelectedPackage}" SelectionMode="Single" AutoGenerateColumns="False" Items="{Binding Packages}">

@@ -1,10 +1,13 @@
+using ArchUpdateGUI.ViewModels;
 using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using Avalonia.ReactiveUI;
+using ReactiveUI;
+using System;
 
 namespace ArchUpdateGUI.Views;
 
-public partial class PasswordWindow : Window
+public partial class PasswordWindow : ReactiveWindow<PasswordViewModel>
 {
     public PasswordWindow()
     {
@@ -12,6 +15,7 @@ public partial class PasswordWindow : Window
 #if DEBUG
         this.AttachDevTools();
 #endif
+        this.WhenActivated(d => d(ViewModel!.Ok.Subscribe(Close)));
     }
 
     private void InitializeComponent()

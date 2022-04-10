@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security;
 using System.Threading.Tasks;
-using ArchUpdateGUI.Utils;
 using DynamicData.Kernel;
 
 namespace ArchUpdateGUI.Models;
@@ -10,11 +10,14 @@ namespace ArchUpdateGUI.Models;
 public class Flatpak : IProvider
 {
     public string Name => "Flatpak";
-    public List<Package> Packages { get; }
-    public int Installed { get; }
-    public int Total { get; }
+    public bool RootRequired => false;
+    public List<Package> Packages { get; private set; }
+    public int Installed { get; private set; }
+    public int Total { get; private set; }
 
-    public Flatpak()
+    public Flatpak() => Load();
+
+    public void Load()
     {
         Packages = new();
         var result = Command.Run("flatpak remotes");
@@ -50,7 +53,7 @@ public class Flatpak : IProvider
         Installed = installedPackage.Count;
     }
 
-    public string Search(Package package)
+    public string PackageInfo(Package package)
     {
         var result = Command.Run($"flatpak search {package.QualifiedName}");
         if (result.ExitCode != 0) throw new CommandException(result.Error);
@@ -60,20 +63,14 @@ public class Flatpak : IProvider
             : result.Output;
     }
 
-    public void Install(Package package)
-    {
-        var result = Command.Run($"flatpak install {package.QualifiedName}");
-        if (result.ExitCode != 0) throw new CommandException(result.Error);
-    }
+    public Task<int> Install(SecureString? pass, Package package, Action<string?> output, Action<string?> error) => 
+        Command.Run($"flatpak install {package.QualifiedName} -y", output, error);
 
-    public void Remove(Package package)
-    {
-        var result = Command.Run($"flatpak remove {package.QualifiedName}");
-        if (result.ExitCode != 0) throw new CommandException(result.Error);
-    }
+    public Task<int> Remove(SecureString? pass, Package package, Action<string?> output, Action<string?> error) => 
+        Command.Run($"flatpak remove {package.QualifiedName} -y", output, error);
 
     public Command Version() => Command.Run($"flatpak --version");
 
-    public Task<int> Update(Action<string?> output, Action<string?> error) => 
-        Command.Run("flatpak update", output, error);
+    public Task<int> Update(SecureString? pass, Action<string?> output, Action<string?> error) => 
+        Command.Run("flatpak update -y", output, error);
 }

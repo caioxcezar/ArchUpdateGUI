@@ -4,11 +4,15 @@
     <option name="projectPerEditor">
       <map>
         <entry key="ArchUpdateGUI/App.axaml" value="ArchUpdateGUI/ArchUpdateGUI.csproj" />
+        <entry key="ArchUpdateGUI/Views/ConfigView.axaml" value="ArchUpdateGUI/ArchUpdateGUI.csproj" />
+        <entry key="ArchUpdateGUI/Views/ConfigViewModel.axaml" value="ArchUpdateGUI/ArchUpdateGUI.csproj" />
         <entry key="ArchUpdateGUI/Views/MainUserControl.axaml" value="ArchUpdateGUI/ArchUpdateGUI.csproj" />
         <entry key="ArchUpdateGUI/Views/MainUserControlView.axaml" value="ArchUpdateGUI/ArchUpdateGUI.csproj" />
         <entry key="ArchUpdateGUI/Views/MainView.axaml" value="ArchUpdateGUI/ArchUpdateGUI.csproj" />
         <entry key="ArchUpdateGUI/Views/MainWindow.axaml" value="ArchUpdateGUI/ArchUpdateGUI.csproj" />
+        <entry key="ArchUpdateGUI/Views/PasswordView.axaml" value="ArchUpdateGUI/ArchUpdateGUI.csproj" />
         <entry key="ArchUpdateGUI/Views/PasswordWindow.axaml" value="ArchUpdateGUI/ArchUpdateGUI.csproj" />
+        <entry key="ArchUpdateGUI/Views/TerminalView.axaml" value="ArchUpdateGUI/ArchUpdateGUI.csproj" />
       </map>
     </option>
   </component>

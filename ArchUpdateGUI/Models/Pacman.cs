@@ -1,20 +1,23 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security;
 using System.Threading.Tasks;
-using ArchUpdateGUI.Utils;
 
 namespace ArchUpdateGUI.Models;
 
 public class Pacman : IProvider
 {
     public string Name => "Pacman";
+    public bool RootRequired => true;
 
-    public List<Package> Packages { get; }
-    public int Installed { get; }
-    public int Total { get; }
+    public List<Package> Packages { get; private set; }
+    public int Installed { get; private set; }
+    public int Total { get; private set; }
 
-    public Pacman()
+    public Pacman() => Load();
+
+    public void Load()
     {
         Packages = new();
         var result = Command.Run("pacman -Sl");
@@ -38,27 +41,21 @@ public class Pacman : IProvider
         Total = Packages.Count;
     }
 
-    public string Search(Package package)
+    public string PackageInfo(Package package)
     {
         var result = Command.Run($"pacman -Si {package.Name}");
         if (result.ExitCode != 0) throw new CommandException(result.Error);
         return result.Output;
     }
 
-    public void Install(Package package)
-    {
-        var result = Command.Run($"pacman -Ss {package.Name}"); //TODO
-        if (result.ExitCode != 0) throw new CommandException(result.Error);
-    }
+    public Task<int> Install(SecureString? pass, Package package, Action<string?> output, Action<string?> error) =>
+        Command.Run($"echo {pass!.SecureToString()} | sudo -S pacman -Ss {package.Name} --noconfirm", output, error);
 
-    public void Remove(Package package)
-    {
-        var result = Command.Run($"pacman -Rs {package.Name}"); //TODO
-        if (result.ExitCode != 0) throw new CommandException(result.Error);
-    }
+    public Task<int> Remove(SecureString? pass, Package package, Action<string?> output, Action<string?> error) =>
+        Command.Run($"echo {pass!.SecureToString()} | sudo -S pacman -Rs {package.Name} --noconfirm", output, error);
 
-    public Task<int> Update(Action<string?> output, Action<string?> error) =>
-        Command.Run("echo <PASSWORD> | sudo -S pacman -Syu --noconfirm", output, error); //TODO
+    public Task<int> Update(SecureString? pass, Action<string?> output, Action<string?> error) =>
+        Command.Run($"echo {pass!.SecureToString()} | sudo -S pacman -Syu --noconfirm", output, error);
 
     public Command Version() => Command.Run("pacman --version");
 }

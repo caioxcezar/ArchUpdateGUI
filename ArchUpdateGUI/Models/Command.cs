@@ -5,7 +5,7 @@ using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ArchUpdateGUI.Utils;
+namespace ArchUpdateGUI.Models;
 
 public class Command
 {
@@ -64,7 +64,7 @@ public class Command
         return command;
     }
 
-    public static string GetErrorName(int exitCode) => exitCode switch
+    public static string ExitCodeName(int exitCode) => exitCode switch
     {
         0 => "Successful",
         1 => "General Error",

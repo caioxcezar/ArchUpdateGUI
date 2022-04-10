@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security;
 using System.Threading.Tasks;
-using ArchUpdateGUI.Utils;
 using DynamicData.Kernel;
 
 namespace ArchUpdateGUI.Models;
@@ -10,11 +10,14 @@ namespace ArchUpdateGUI.Models;
 public class ProtonUp : IProvider
 {
     public string Name => "ProtonUp";
-    public List<Package> Packages { get; }
-    public int Installed { get; }
-    public int Total { get; }
+    public bool RootRequired => false;
+    public List<Package> Packages { get; private set; }
+    public int Installed { get; private set; }
+    public int Total { get; private set; }
 
-    public ProtonUp()
+    public ProtonUp() => Load();
+
+    public void Load()
     {
         var result = Command.Run("protonup --releases");
         if (result.ExitCode != 0) throw new CommandException(result.Error);
@@ -22,30 +25,26 @@ public class ProtonUp : IProvider
         {
             Provider = Name,
             Version = version,
-            Name = "Proton GE"
+            Name = "Proton GE",
+            QualifiedName = $"Proton GE {version}"
         }).ToList();
         result = Command.Run("protonup -l");
         if (result.ExitCode != 0) throw new CommandException(result.Error);
         var installed = result.Output.Split("\n").ToList();
         Parallel.ForEach(Packages, package =>
         {
-            package.IsInstalled = installed.FirstOrOptional(i => i.Contains(package.Version)).HasValue;
+            package.IsInstalled = installed.FirstOrOptional(i => i.Contains(package.Version!)).HasValue;
         });
+        Total = Packages.Count;
+        Installed = Packages.Count(p => p.IsInstalled);
     }
-    public string Search(Package package) => Packages.First(p => p.Version == package.Version).Version;
+    public string PackageInfo(Package package) => Packages.First(p => p.Version == package.Version).Version;
+    public Task<int> Install(SecureString? pass, Package package, Action<string?> output, Action<string?> error) =>
+        Command.Run($"protonup -t {package.Version} -y", output, error);
 
-    public void Install(Package package)
-    {
-        var result = Command.Run($"protonup -t {package.Version}");
-        if (result.ExitCode != 0) throw new CommandException(result.Error);
-    }
+    public Task<int> Remove(SecureString? pass, Package package, Action<string?> output, Action<string?> error) =>
+        Command.Run($"protonup -r {package.Version} -y", output, error);
 
-    public void Remove(Package package)
-    {
-        var result = Command.Run($"protonup -r {package.Version}");
-        if (result.ExitCode != 0) throw new CommandException(result.Error);
-    }
-
-    public Task<int> Update(Action<string?> output, Action<string?> error) =>
+    public Task<int> Update(SecureString? pass, Action<string?> output, Action<string?> error) =>
         Command.Run("protonup -y", output, error);
 }

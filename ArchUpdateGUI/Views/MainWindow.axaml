@@ -7,7 +7,7 @@
         x:Class="ArchUpdateGUI.Views.MainWindow"
         Icon="/Assets/pacman_icon.ico"
         Title="ArchUpdateGUI"
-        Content="{Binding Content}">
+        Content="{Binding Current}">
 
     <Design.DataContext>
         <vm:MainWindowViewModel/>

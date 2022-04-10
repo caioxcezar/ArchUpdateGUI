@@ -17,12 +17,13 @@ public class Providers
         {
             try
             {
-                var obj = (IProvider)Activator.CreateInstance(@class)!;
-                List.Add(obj);
+                var obj = Activator.CreateInstance(@class)!;
+                List.Add((IProvider)obj);
             }
-            catch (CommandException)
+            catch (TargetInvocationException e)
             {
-                // ignored
+                if (e.InnerException?.GetType() == typeof(CommandException)) continue;
+                throw;
             }
         }
     }
