@@ -17,7 +17,7 @@ public class MainViewModel : ViewModelBase
 {
     public ObservableCollection<Package> Packages { get; }
     private string _searchParam;
-    private IProvider _provider;
+    private IProvider? _provider;
     private List<IProvider> _providers;
     private string _info = "Select a provider. ";
     private string _packageInfo;
@@ -38,36 +38,7 @@ public class MainViewModel : ViewModelBase
 
             IObservable<bool> canExecute = this.WhenAnyValue(props => props.CommandText, action => !string.IsNullOrWhiteSpace(action));
 
-            CommandAction = ReactiveCommand.CreateFromTask(async () =>
-            {
-                var pass = Provider.RootRequired ? await ShowPassword.Handle(new PasswordViewModel()) : null;
-                switch (CommandText)
-                {
-                    case "Install":
-                        ShowTerminal(action =>
-                        {
-                            var exitCode = Provider.Install(pass, SelectedPackage,
-                                action.Invoke,
-                                action.Invoke).Result;
-                            action.Invoke(Command.ExitCodeName(exitCode));
-                            Reload();
-                        });
-                        break;
-                    case "Remove":
-                        ShowTerminal(action =>
-                        {
-                            var exitCode = Provider.Remove(pass, SelectedPackage,
-                                action.Invoke,
-                                action.Invoke).Result;
-                            action.Invoke(Command.ExitCodeName(exitCode));
-                            Reload();
-                        });
-                        break;
-                    default:
-                        await MessageBoxManager.GetMessageBoxStandardWindow("A error has occurred", "Invalid Option. ").Show();
-                        break;
-                }
-            }, canExecute);
+            CommandAction = ReactiveCommand.CreateFromTask(InnerCommandAction, canExecute);
         }
         catch (Exception e)
         {
@@ -76,11 +47,38 @@ public class MainViewModel : ViewModelBase
         }
     }
 
-    private void Reload()
+    private async Task InnerCommandAction()
     {
-        Provider.Load();
-        ChangedProvider(Provider);
+        var pass = Provider!.RootRequired ? await ShowPassword.Handle(new PasswordViewModel()) : null;
+        switch (CommandText)
+        {
+            case "Install":
+                ShowTerminal(action =>
+                {
+                    var exitCode = Provider.Install(pass, SelectedPackage,
+                        action.Invoke,
+                        action.Invoke).Result;
+                    action.Invoke(Command.ExitCodeName(exitCode));
+                    Reload();
+                });
+                break;
+            case "Remove":
+                ShowTerminal(action =>
+                {
+                    var exitCode = Provider.Remove(pass, SelectedPackage,
+                        action.Invoke,
+                        action.Invoke).Result;
+                    action.Invoke(Command.ExitCodeName(exitCode));
+                    Reload();
+                });
+                break;
+            default:
+                await MessageBoxManager.GetMessageBoxStandardWindow("A error has occurred", "Invalid Option. ").Show();
+                break;
+        }
     }
+
+    private void Reload() => ChangedProvider(Provider);
 
     private void ShowTerminal(Action<Action<string?>> action) => Navigate(typeof(TerminalViewModel), action);
 
@@ -89,9 +87,12 @@ public class MainViewModel : ViewModelBase
         try
         {
             if (provider == null) return;
+            ShowLoading(true); //TODO Loading
+            provider.Load();
             Packages.Clear();
             Packages.AddRange(provider.Packages);
             Info = $"packages {provider.Installed} installed of {provider.Total}";
+            ShowLoading(false);
         }
         catch (Exception e)
         {
@@ -100,7 +101,7 @@ public class MainViewModel : ViewModelBase
         }
     }
 
-    public async void OpenConfig()
+    public async Task OpenConfig()
     {
         try
         {
@@ -114,6 +115,7 @@ public class MainViewModel : ViewModelBase
 
     public void Search()
     {
+        if (Provider == null) return;
         var filteredList = Provider.Packages.Where(package =>
             package.Name != null && package.Name.ToLower().Contains(SearchParam.ToLower()));
         Packages.Clear();
@@ -129,9 +131,9 @@ public class MainViewModel : ViewModelBase
                 CommandVisibility = false;
                 return;
             }
-            CommandVisibility = true;
-            PackageInfo = Provider.PackageInfo(package);
+            PackageInfo = Provider!.PackageInfo(package);
             CommandText = package.IsInstalled ? "Remove" : "Install";
+            CommandVisibility = true;
         }
         catch (Exception e)
         {
@@ -142,11 +144,12 @@ public class MainViewModel : ViewModelBase
         }
     }
 
-    public async void SystemUpdate()
+    private async void Update()
     {
         try
         {
-            var pass = Provider.RootRequired ? await ShowPassword.Handle(new PasswordViewModel()) : null;
+            if (Provider == null) return;
+            var pass = Provider!.RootRequired ? await ShowPassword.Handle(new PasswordViewModel()) : null;
             if (pass == null && Provider.RootRequired)
             {
                 await MessageBoxManager
@@ -158,8 +161,8 @@ public class MainViewModel : ViewModelBase
             ShowTerminal(action =>
             {
                 var exitCode = Provider.Update(pass, 
-                    output => action.Invoke(output), 
-                    error => action.Invoke(error)).Result;
+                    action.Invoke, 
+                    action.Invoke).Result;
                action.Invoke(Command.ExitCodeName(exitCode));
                Reload();
             });
@@ -173,9 +176,38 @@ public class MainViewModel : ViewModelBase
         }
     }
 
-    // public async Task<SecureString?> AskPassword() => Provider.RootRequired ? await ShowPassword.Handle(new PasswordViewModel()) : null;
+
+    public async void UpdateAll()
+    {
+        SecureString? pass = null;
+        if (Providers.FirstOrDefault(p => p.RootRequired) != null)
+        {
+            pass = await ShowPassword.Handle(new PasswordViewModel());
+            if (pass == null)
+            {
+                await MessageBoxManager
+                    .GetMessageBoxStandardWindow("Wrong password",
+                        $"Please provide the correct password. ")
+                    .Show();
+                return;
+            }
+        }
+        ShowTerminal(action =>
+        {
+            foreach (var provider in Providers)
+            {
+                Command.Run("sudo -k");
+                action.Invoke($"►▻►{provider.Name}\n");
+                var exitCode = provider.Update(pass,
+                    action.Invoke,
+                    action.Invoke).Result;
+                action.Invoke($"{Command.ExitCodeName(exitCode)}\n");
+                //Reload(provider);
+            }
+        });
+    }
         
-    public IProvider Provider
+    public IProvider? Provider
     {
         get => _provider;
         private set => this.RaiseAndSetIfChanged(ref _provider, value);
@@ -221,7 +253,7 @@ public class MainViewModel : ViewModelBase
         get => _commandVisibility;
         private set => this.RaiseAndSetIfChanged(ref _commandVisibility, value);
     }
-
+    
     public ReactiveCommand<Unit, Unit> CommandAction { get; }
     public Interaction<PasswordViewModel, SecureString?> ShowPassword { get; }
 }

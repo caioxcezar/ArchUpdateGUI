@@ -13,6 +13,7 @@ public interface IProvider
     int Total { get; }
     bool RootRequired { get; }
     void Load();
+    Command Version();
     string PackageInfo(Package package);
     Task<int> Install(SecureString? pass, Package package, Action<string?> output, Action<string?> error);
     Task<int> Remove(SecureString? pass, Package package, Action<string?> output, Action<string?> error);

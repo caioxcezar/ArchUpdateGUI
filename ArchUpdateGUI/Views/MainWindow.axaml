@@ -3,14 +3,17 @@
         xmlns:vm="using:ArchUpdateGUI.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="using:ArchUpdateGUI.Views"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="ArchUpdateGUI.Views.MainWindow"
         Icon="/Assets/pacman_icon.ico"
         Title="ArchUpdateGUI"
-        Content="{Binding Current}">
-
+        FontFamily="/Assets/Hack_Regular_Nerd_Font_Complete_Mono.ttf">
     <Design.DataContext>
         <vm:MainWindowViewModel/>
     </Design.DataContext>
-
+    <Panel>
+        <local:LoadingView Height="{Binding $parent[Panel].Bounds.Height}" Width="{Binding $parent[Panel].Bounds.Width}" IsVisible="{Binding Loading}"/>
+        <UserControl IsVisible="{Binding !Loading}" Content="{Binding Current}" />
+    </Panel>
 </Window>

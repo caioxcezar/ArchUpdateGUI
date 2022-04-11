@@ -15,8 +15,6 @@ public class ProtonUp : IProvider
     public int Installed { get; private set; }
     public int Total { get; private set; }
 
-    public ProtonUp() => Load();
-
     public void Load()
     {
         var result = Command.Run("protonup --releases");
@@ -47,4 +45,6 @@ public class ProtonUp : IProvider
 
     public Task<int> Update(SecureString? pass, Action<string?> output, Action<string?> error) =>
         Command.Run("protonup -y", output, error);
+    
+    public Command Version() => Command.Run("protonup -h");
 }

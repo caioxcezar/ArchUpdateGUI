@@ -15,8 +15,6 @@ public class Flatpak : IProvider
     public int Installed { get; private set; }
     public int Total { get; private set; }
 
-    public Flatpak() => Load();
-
     public void Load()
     {
         Packages = new();

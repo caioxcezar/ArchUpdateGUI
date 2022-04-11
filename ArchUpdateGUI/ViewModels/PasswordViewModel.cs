@@ -12,7 +12,8 @@ public class PasswordViewModel : ReactiveObject
     {
         Ok = ReactiveCommand.Create(() =>
         {
-            var result = Command.Run($"echo {Password} | sudo -S su");
+            var result = Command.Run($"echo '{Password}' | sudo -S su");
+            Command.Run("sudo -k");
             if (result.ExitCode != 0) return null;
             var pass = new SecureString();
             foreach (var c in Password.ToCharArray())

@@ -10,7 +10,7 @@ public class TerminalViewModel : ViewModelBase
     public TerminalViewModel(MainWindowViewModel main, Action<Action<string?>> action) : base(main)
     {
         TerminalText = "";
-        Task.Run(() => action.Invoke(str => TerminalText += str));
+         Task.Run(() => action.Invoke(str => TerminalText += str));
     }
 
     public string TerminalText

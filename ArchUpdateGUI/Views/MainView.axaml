@@ -14,10 +14,10 @@
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
             </ComboBox>
-            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding SearchParam}"  Watermark="Package Name" FontFamily="Assets/Hack_Regular_Nerd Font_Complete_Mono.ttf"/>
+            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding SearchParam}"  Watermark="Package Name "/>
             <Button Height="32" Command="{Binding Search}" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Center"><i:Icon Value="fa fa-search" /></Button>
             <Button Height="32" Command="{Binding OpenConfig}" Grid.Row="0" Grid.Column="3" HorizontalAlignment="Right"><i:Icon Value="fa fa-cog" /></Button>
-            <Button Height="32" Command="{Binding SystemUpdate}" Grid.Row="0" Grid.Column="4" HorizontalAlignment="Right"><i:Icon Value="fa fa-sync" /></Button>
+            <Button Height="32" Command="{Binding Update}" Grid.Row="0" Grid.Column="4" HorizontalAlignment="Right"><i:Icon Value="fa fa-sync" /></Button>
         </Grid>
         <StackPanel DockPanel.Dock="Bottom">
             <Border         
@@ -30,7 +30,10 @@
                     <TextBlock Text="{Binding PackageInfo}"/>
                 </ScrollViewer>
             </Border>
-            <Button IsEnabled="{Binding CommandVisibility}" Command="{Binding CommandAction}" Content="{Binding CommandText}" IsVisible="{Binding CommandVisibility}"/>
+            <Panel Margin="0,5,0,5">
+                <Button HorizontalAlignment="Left" IsEnabled="{Binding CommandVisibility}" Command="{Binding CommandAction}" Content="{Binding CommandText}" IsVisible="{Binding CommandVisibility}"/>
+                <Button HorizontalAlignment="Right" Command="{Binding UpdateAll}" Content="Update All"/>
+            </Panel>
             <Label Content="{Binding Info}"/>
         </StackPanel>
         <DataGrid SelectedItem="{Binding SelectedPackage}" SelectionMode="Single" AutoGenerateColumns="False" Items="{Binding Packages}">

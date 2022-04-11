@@ -15,4 +15,5 @@ public class ViewModelBase : ReactiveObject
     }
     public void GoBack() => _main.GoBack();
     public void Navigate(Type viewModelBase, params object?[]? args) => _main.Navigate(viewModelBase, args);
+    public void ShowLoading(bool isLoading) => _main.Loading = isLoading;
 }

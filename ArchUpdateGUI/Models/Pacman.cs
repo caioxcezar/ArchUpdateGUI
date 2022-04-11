@@ -15,8 +15,6 @@ public class Pacman : IProvider
     public int Installed { get; private set; }
     public int Total { get; private set; }
 
-    public Pacman() => Load();
-
     public void Load()
     {
         Packages = new();
@@ -36,7 +34,7 @@ public class Pacman : IProvider
                     IsInstalled = listPackage.Length == 4
                 });
         }
-
+        
         Installed = Packages.Count(p => p.IsInstalled);
         Total = Packages.Count;
     }
@@ -49,13 +47,13 @@ public class Pacman : IProvider
     }
 
     public Task<int> Install(SecureString? pass, Package package, Action<string?> output, Action<string?> error) =>
-        Command.Run($"echo {pass!.SecureToString()} | sudo -S pacman -Ss {package.Name} --noconfirm", output, error);
+        Command.Run($"echo '{pass!.SecureToString()}' | sudo -S pacman -Ss {package.Name} --noconfirm", output, error);
 
     public Task<int> Remove(SecureString? pass, Package package, Action<string?> output, Action<string?> error) =>
-        Command.Run($"echo {pass!.SecureToString()} | sudo -S pacman -Rs {package.Name} --noconfirm", output, error);
+        Command.Run($"echo '{pass!.SecureToString()}' | sudo -S pacman -Rs {package.Name} --noconfirm", output, error);
 
     public Task<int> Update(SecureString? pass, Action<string?> output, Action<string?> error) =>
-        Command.Run($"echo {pass!.SecureToString()} | sudo -S pacman -Syu --noconfirm", output, error);
+        Command.Run($"echo '{pass!.SecureToString()}' | sudo -S pacman -Syu --noconfirm", output, error);
 
     public Command Version() => Command.Run("pacman --version");
 }

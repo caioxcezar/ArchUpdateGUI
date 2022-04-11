@@ -9,6 +9,7 @@ namespace ArchUpdateGUI.ViewModels
     {
         ViewModelBase _current;
         private List<ViewModelBase> _stack;
+        private bool _loading;
         
         public MainWindowViewModel()
         {
@@ -35,6 +36,13 @@ namespace ArchUpdateGUI.ViewModels
         {
             get => _current;
             private set => this.RaiseAndSetIfChanged(ref _current, value);
+        }
+
+        public bool Loading
+        {
+            get => _loading;
+            set => this.RaiseAndSetIfChanged(ref _loading, value);
+
         }
     }
 }

@@ -6,6 +6,7 @@
         <entry key="ArchUpdateGUI/App.axaml" value="ArchUpdateGUI/ArchUpdateGUI.csproj" />
         <entry key="ArchUpdateGUI/Views/ConfigView.axaml" value="ArchUpdateGUI/ArchUpdateGUI.csproj" />
         <entry key="ArchUpdateGUI/Views/ConfigViewModel.axaml" value="ArchUpdateGUI/ArchUpdateGUI.csproj" />
+        <entry key="ArchUpdateGUI/Views/LoadingView.axaml" value="ArchUpdateGUI/ArchUpdateGUI.csproj" />
         <entry key="ArchUpdateGUI/Views/MainUserControl.axaml" value="ArchUpdateGUI/ArchUpdateGUI.csproj" />
         <entry key="ArchUpdateGUI/Views/MainUserControlView.axaml" value="ArchUpdateGUI/ArchUpdateGUI.csproj" />
         <entry key="ArchUpdateGUI/Views/MainView.axaml" value="ArchUpdateGUI/ArchUpdateGUI.csproj" />
