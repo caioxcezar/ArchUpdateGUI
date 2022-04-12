@@ -6,17 +6,24 @@ namespace ArchUpdateGUI.ViewModels;
 
 public class TerminalViewModel : ViewModelBase
 {
-    public string _terminalText;
-    public TerminalViewModel(MainWindowViewModel main, Action<Action<string?>> action) : base(main)
+    private string _terminalText = "";
+    private string _title = "";
+
+    public TerminalViewModel(MainWindowViewModel main, string title, Action<Action<string?>> action) : base(main)
     {
-        TerminalText = "";
-         Task.Run(() => action.Invoke(str => TerminalText += str));
+        Title = title;
+        Task.Run(() => action.Invoke(str => TerminalText += str));
     }
 
     public string TerminalText
     {
         get => _terminalText;
         set => this.RaiseAndSetIfChanged(ref _terminalText, value);
+    }
+    public string Title
+    {
+        get => _title;
+        set => this.RaiseAndSetIfChanged(ref _title, value);
     }
     public void Back() => GoBack();
 }

@@ -15,7 +15,7 @@ public class Flatpak : IProvider
     public int Installed { get; private set; }
     public int Total { get; private set; }
 
-    public void Load()
+    public void Load(bool cached)
     {
         Packages = new();
         var result = Command.Run("flatpak remotes");

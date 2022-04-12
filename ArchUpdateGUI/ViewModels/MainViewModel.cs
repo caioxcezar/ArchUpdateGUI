@@ -7,6 +7,7 @@ using System.Reactive.Linq;
 using System.Security;
 using System.Threading.Tasks;
 using ArchUpdateGUI.Models;
+using AvaloniaEdit.Utils;
 using DynamicData;
 using MessageBox.Avalonia;
 using ReactiveUI;
@@ -15,36 +16,30 @@ namespace ArchUpdateGUI.ViewModels;
 
 public class MainViewModel : ViewModelBase
 {
-    public ObservableCollection<Package> Packages { get; }
-    private string _searchParam;
+    
+    public ObservableCollection<Package> Packages { get; private set; }
+    private string _searchParam = "";
     private IProvider? _provider;
-    private List<IProvider> _providers;
+    private List<IProvider> _providers = new();
     private string _info = "Select a provider. ";
-    private string _packageInfo;
-    private Package _selectedPackage;
-    private string _commandText;
+    private string _packageInfo = "";
+    private Package? _selectedPackage;
+    private string _commandText = "";
     private bool _commandVisibility;
     public MainViewModel(MainWindowViewModel model) : base(model)
     {
-        try
-        {
-            ShowPassword = new();
-            Packages = new();
-            Providers = new Providers().List;
-            this.WhenAnyValue(props => props.Provider).Subscribe(provider => ChangedProvider(provider));
-            this.WhenAnyValue(props => props.SelectedPackage).Subscribe(package => ChangedPackage(package));
-            this.WhenAnyValue(props => props.SearchParam).Where(param => !string.IsNullOrWhiteSpace(param))
-                .Throttle(TimeSpan.FromMilliseconds(400)).ObserveOn(RxApp.MainThreadScheduler).Subscribe(_ => Search());
+        Packages = new();
+        ShowPassword = new();
+        Packages = new();
+        Providers = new Providers().List;
+        this.WhenAnyValue(props => props.Provider).Subscribe(provider => ChangedProvider(provider, true));
+        this.WhenAnyValue(props => props.SelectedPackage).Subscribe(ChangedPackage);
+        this.WhenAnyValue(props => props.SearchParam).Where(param => !string.IsNullOrWhiteSpace(param))
+            .Throttle(TimeSpan.FromMilliseconds(400)).ObserveOn(RxApp.MainThreadScheduler).Subscribe(_ => Search());
 
-            IObservable<bool> canExecute = this.WhenAnyValue(props => props.CommandText, action => !string.IsNullOrWhiteSpace(action));
+        IObservable<bool> canExecute = this.WhenAnyValue(props => props.CommandText, action => !string.IsNullOrWhiteSpace(action));
 
-            CommandAction = ReactiveCommand.CreateFromTask(InnerCommandAction, canExecute);
-        }
-        catch (Exception e)
-        {
-            var msgBox = MessageBoxManager.GetMessageBoxStandardWindow("A error has occurred", e.Message);
-            msgBox.Show();
-        }
+        CommandAction = ReactiveCommand.CreateFromTask(InnerCommandAction, canExecute);
     }
 
     private async Task InnerCommandAction()
@@ -53,7 +48,7 @@ public class MainViewModel : ViewModelBase
         switch (CommandText)
         {
             case "Install":
-                ShowTerminal(action =>
+                ShowTerminal($"Instaling {SelectedPackage!.Name}", action =>
                 {
                     var exitCode = Provider.Install(pass, SelectedPackage,
                         action.Invoke,
@@ -63,7 +58,7 @@ public class MainViewModel : ViewModelBase
                 });
                 break;
             case "Remove":
-                ShowTerminal(action =>
+                ShowTerminal($"Removing {SelectedPackage!.Name}",action =>
                 {
                     var exitCode = Provider.Remove(pass, SelectedPackage,
                         action.Invoke,
@@ -78,17 +73,17 @@ public class MainViewModel : ViewModelBase
         }
     }
 
-    private void Reload() => ChangedProvider(Provider);
+    private void Reload() => ChangedProvider(Provider, false);
 
-    private void ShowTerminal(Action<Action<string?>> action) => Navigate(typeof(TerminalViewModel), action);
+    private void ShowTerminal(string title, Action<Action<string?>> action) => Navigate(typeof(TerminalViewModel), title, action);
 
-    private void ChangedProvider(IProvider? provider)
+    private async void ChangedProvider(IProvider? provider, bool cached)
     {
         try
         {
             if (provider == null) return;
-            ShowLoading(true); //TODO Loading
-            provider.Load();
+            ShowLoading(true);
+            await Task.Run(() => provider.Load(cached));
             Packages.Clear();
             Packages.AddRange(provider.Packages);
             Info = $"packages {provider.Installed} installed of {provider.Total}";
@@ -96,11 +91,10 @@ public class MainViewModel : ViewModelBase
         }
         catch (Exception e)
         {
-            var msgBox = MessageBoxManager.GetMessageBoxStandardWindow("A error has occurred", e.Message);
-            msgBox.Show();
+            await MessageBoxManager.GetMessageBoxStandardWindow("A error has occurred", e.Message).Show();
         }
     }
-
+    
     public async Task OpenConfig()
     {
         try
@@ -112,7 +106,7 @@ public class MainViewModel : ViewModelBase
             await MessageBoxManager.GetMessageBoxStandardWindow("A error has occurred", e.Message).Show();
         }
     }
-
+    
     public void Search()
     {
         if (Provider == null) return;
@@ -144,7 +138,8 @@ public class MainViewModel : ViewModelBase
         }
     }
 
-    private async void Update()
+    
+    public async void Update()
     {
         try
         {
@@ -158,7 +153,7 @@ public class MainViewModel : ViewModelBase
                     .Show();
                 return;
             }
-            ShowTerminal(action =>
+            ShowTerminal($"Updating {Provider.Name}", action =>
             {
                 var exitCode = Provider.Update(pass, 
                     action.Invoke, 
@@ -192,7 +187,7 @@ public class MainViewModel : ViewModelBase
                 return;
             }
         }
-        ShowTerminal(action =>
+        ShowTerminal("Updating",action =>
         {
             foreach (var provider in Providers)
             {
@@ -206,52 +201,53 @@ public class MainViewModel : ViewModelBase
             }
         });
     }
-        
+    
     public IProvider? Provider
     {
         get => _provider;
-        private set => this.RaiseAndSetIfChanged(ref _provider, value);
+        set => this.RaiseAndSetIfChanged(ref _provider, value);
     }
+    
     public List<IProvider> Providers
     {
         get => _providers;
-        private set => this.RaiseAndSetIfChanged(ref _providers, value);
+        set => this.RaiseAndSetIfChanged(ref _providers, value);
     }
-
+    
     public string Info
     {
         get => _info;
         private set => this.RaiseAndSetIfChanged(ref _info, value);
     }
-
+    
     public string SearchParam
     {
         get => _searchParam;
-        private set => this.RaiseAndSetIfChanged(ref _searchParam, value);
+        set => this.RaiseAndSetIfChanged(ref _searchParam, value);
     }
-
+    
     public string PackageInfo
     {
         get => _packageInfo;
-        private set => this.RaiseAndSetIfChanged(ref _packageInfo, value);
+        set => this.RaiseAndSetIfChanged(ref _packageInfo, value);
     }
-
-    public Package SelectedPackage
+    
+    public Package? SelectedPackage
     {
         get => _selectedPackage;
-        private set => this.RaiseAndSetIfChanged(ref _selectedPackage, value);
+        set => this.RaiseAndSetIfChanged(ref _selectedPackage, value);
     }
     
     public string CommandText
     {
         get => _commandText;
-        private set => this.RaiseAndSetIfChanged(ref _commandText, value);
+        set => this.RaiseAndSetIfChanged(ref _commandText, value);
     }
     
     public bool CommandVisibility
     {
         get => _commandVisibility;
-        private set => this.RaiseAndSetIfChanged(ref _commandVisibility, value);
+        set => this.RaiseAndSetIfChanged(ref _commandVisibility, value);
     }
     
     public ReactiveCommand<Unit, Unit> CommandAction { get; }

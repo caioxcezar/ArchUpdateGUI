@@ -15,28 +15,30 @@ public class ProtonUp : IProvider
     public int Installed { get; private set; }
     public int Total { get; private set; }
 
-    public void Load()
+    public void Load(bool cached)
     {
         var result = Command.Run("protonup --releases");
         if (result.ExitCode != 0) throw new CommandException(result.Error);
-        Packages = result.Output.Split('\n').Select(version => new Package
-        {
-            Provider = Name,
-            Version = version,
-            Name = "Proton GE",
-            QualifiedName = $"Proton GE {version}"
-        }).ToList();
+        Packages = result.Output.Split('\n')
+            .Where(p => !string.IsNullOrWhiteSpace(p))
+            .Select(version => new Package
+            {
+                Provider = Name,
+                Version = version,
+                Name = "Proton GE",
+                QualifiedName = $"Proton GE {version}"
+            }).ToList();
         result = Command.Run("protonup -l");
         if (result.ExitCode != 0) throw new CommandException(result.Error);
         var installed = result.Output.Split("\n").ToList();
-        Parallel.ForEach(Packages, package =>
+        foreach(var package in Packages)
         {
-            package.IsInstalled = installed.FirstOrOptional(i => i.Contains(package.Version!)).HasValue;
-        });
+            package.IsInstalled = installed.FirstOrOptional(i => i.Split(" - ")[0] == package.Version).HasValue;
+        }
         Total = Packages.Count;
         Installed = Packages.Count(p => p.IsInstalled);
     }
-    public string PackageInfo(Package package) => Packages.First(p => p.Version == package.Version).Version;
+    public string PackageInfo(Package package) => Packages.First(p => p.Version == package.Version).Version ?? "";
     public Task<int> Install(SecureString? pass, Package package, Action<string?> output, Action<string?> error) =>
         Command.Run($"protonup -t {package.Version} -y", output, error);
 
