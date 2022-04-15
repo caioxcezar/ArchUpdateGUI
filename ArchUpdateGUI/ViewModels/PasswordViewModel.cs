@@ -1,6 +1,8 @@
 using System.Reactive;
 using System.Security;
 using ArchUpdateGUI.Models;
+using Avalonia.Controls;
+using Avalonia.Input;
 using ReactiveUI;
 
 namespace ArchUpdateGUI.ViewModels;
@@ -17,14 +19,11 @@ public class PasswordViewModel : ReactiveObject
             if (result.ExitCode != 0) return null;
             var pass = new SecureString();
             foreach (var c in Password.ToCharArray())
-            {
                 pass.AppendChar(c);
-            }
             pass.MakeReadOnly();
             return pass;
         });
     }
-
     public string Password
     {
         get => _password;

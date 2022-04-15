@@ -69,10 +69,10 @@ public class Yay : IProvider
     }
 
     public Task<int> Install(SecureString? pass, Package package, Action<string?> output, Action<string?> error) =>
-        Command.Run($"echo '{pass!.SecureToString()}' | sudo -S su && yay -Ss {package.Name} --noconfirm", output, error);
+        Command.Run($"echo '{pass!.SecureToString()}' | sudo -S su && yay -Syu {package.Name} --noconfirm", output, error);
 
     public Task<int> Remove(SecureString? pass, Package package, Action<string?> output, Action<string?> error) =>
-        Command.Run($"echo '{pass!.SecureToString()}' | sudo -S su && yay -Rs {package.Name} --noconfirm", output, error);
+        Command.Run($"echo '{pass!.SecureToString()}' | sudo -S su && yay -Rsu {package.Name} --noconfirm", output, error);
 
     public Task<int> Update(SecureString? pass, Action<string?> output, Action<string?> error) =>
         Command.Run($"echo '{pass!.SecureToString()}' | sudo -S su && yay -Syu --noconfirm", output, error);

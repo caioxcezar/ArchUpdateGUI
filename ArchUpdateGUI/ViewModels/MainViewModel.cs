@@ -7,9 +7,9 @@ using System.Reactive.Linq;
 using System.Security;
 using System.Threading.Tasks;
 using ArchUpdateGUI.Models;
-using AvaloniaEdit.Utils;
 using DynamicData;
 using MessageBox.Avalonia;
+using MessageBox.Avalonia.Enums;
 using ReactiveUI;
 
 namespace ArchUpdateGUI.ViewModels;
@@ -17,7 +17,7 @@ namespace ArchUpdateGUI.ViewModels;
 public class MainViewModel : ViewModelBase
 {
     
-    public ObservableCollection<Package> Packages { get; private set; }
+    public SmartCollection<Package> Packages { get; private set; }
     private string _searchParam = "";
     private IProvider? _provider;
     private List<IProvider> _providers = new();
@@ -44,33 +44,52 @@ public class MainViewModel : ViewModelBase
 
     private async Task InnerCommandAction()
     {
-        var pass = Provider!.RootRequired ? await ShowPassword.Handle(new PasswordViewModel()) : null;
-        switch (CommandText)
+        SecureString? pass = null;
+        if (Provider!.RootRequired)
         {
-            case "Install":
-                ShowTerminal($"Instaling {SelectedPackage!.Name}", action =>
-                {
-                    var exitCode = Provider.Install(pass, SelectedPackage,
-                        action.Invoke,
-                        action.Invoke).Result;
-                    action.Invoke(Command.ExitCodeName(exitCode));
-                    Reload();
-                });
-                break;
-            case "Remove":
-                ShowTerminal($"Removing {SelectedPackage!.Name}",action =>
-                {
-                    var exitCode = Provider.Remove(pass, SelectedPackage,
-                        action.Invoke,
-                        action.Invoke).Result;
-                    action.Invoke(Command.ExitCodeName(exitCode));
-                    Reload();
-                });
-                break;
-            default:
-                await MessageBoxManager.GetMessageBoxStandardWindow("A error has occurred", "Invalid Option. ").Show();
-                break;
+            pass = await ShowPassword.Handle(new PasswordViewModel());
+            if (pass == null)
+            {
+                await MessageBoxManager.GetMessageBoxStandardWindow("A error has occurred", "Invalid Password. ", ButtonEnum.Ok, Icon.Warning).Show();
+                return;
+            }
         }
+
+        try
+        {
+            switch (CommandText)
+            {
+                case "Install":
+                    ShowTerminal($"Instaling {SelectedPackage!.Name}", action =>
+                    {
+                        var exitCode = Provider.Install(pass, SelectedPackage,
+                            action.Invoke,
+                            action.Invoke).Result;
+                        action.Invoke(Command.ExitCodeName(exitCode));
+                        Reload();
+                    });
+                    break;
+                case "Remove":
+                    ShowTerminal($"Removing {SelectedPackage!.Name}",action =>
+                    {
+                        var exitCode = Provider.Remove(pass, SelectedPackage,
+                            action.Invoke,
+                            action.Invoke).Result;
+                        action.Invoke(Command.ExitCodeName(exitCode));
+                        Reload();
+                    });
+                    break;
+                default:
+                    await MessageBoxManager.GetMessageBoxStandardWindow("A error has occurred", "Invalid Option. ", ButtonEnum.Ok, Icon.Warning).Show();
+                    break;
+            }
+        }
+        catch (Exception e)
+        {
+            await MessageBoxManager.GetMessageBoxStandardWindow("A error has occurred", e.Message, ButtonEnum.Ok, Icon.Error).Show();
+            throw;
+        }
+        
     }
 
     private void Reload() => ChangedProvider(Provider, false);
@@ -84,14 +103,13 @@ public class MainViewModel : ViewModelBase
             if (provider == null) return;
             ShowLoading(true);
             await Task.Run(() => provider.Load(cached));
-            Packages.Clear();
-            Packages.AddRange(provider.Packages);
+            Packages.Reset(provider.Packages);
             Info = $"packages {provider.Installed} installed of {provider.Total}";
             ShowLoading(false);
         }
         catch (Exception e)
         {
-            await MessageBoxManager.GetMessageBoxStandardWindow("A error has occurred", e.Message).Show();
+            await MessageBoxManager.GetMessageBoxStandardWindow("A error has occurred", e.Message, ButtonEnum.Ok, Icon.Error).Show();
         }
     }
     
@@ -103,7 +121,7 @@ public class MainViewModel : ViewModelBase
         }
         catch (Exception e)
         {
-            await MessageBoxManager.GetMessageBoxStandardWindow("A error has occurred", e.Message).Show();
+            await MessageBoxManager.GetMessageBoxStandardWindow("A error has occurred", e.Message, ButtonEnum.Ok, Icon.Error).Show();
         }
     }
     
@@ -133,7 +151,7 @@ public class MainViewModel : ViewModelBase
         {
             var msgBox = MessageBoxManager
                 .GetMessageBoxStandardWindow("A error has occurred",
-                    $"Was not possible to archive package information.\n{e.Message}");
+                    $"Was not possible to archive package information.\n{e.Message}", ButtonEnum.Ok, Icon.Error);
             msgBox.Show();
         }
     }
@@ -149,7 +167,7 @@ public class MainViewModel : ViewModelBase
             {
                 await MessageBoxManager
                     .GetMessageBoxStandardWindow("Wrong password",
-                        $"Please provide the correct password. ")
+                        $"Please provide the correct password. ", ButtonEnum.Ok, Icon.Warning)
                     .Show();
                 return;
             }
@@ -166,7 +184,7 @@ public class MainViewModel : ViewModelBase
         {
             await MessageBoxManager
                 .GetMessageBoxStandardWindow("A error has occurred",
-                    $"Was not possible to make update.\n{e.Message}")
+                    $"Was not possible to make update.\n{e.Message}", ButtonEnum.Ok, Icon.Error)
                 .Show();
         }
     }
@@ -182,7 +200,7 @@ public class MainViewModel : ViewModelBase
             {
                 await MessageBoxManager
                     .GetMessageBoxStandardWindow("Wrong password",
-                        $"Please provide the correct password. ")
+                        $"Please provide the correct password. ", ButtonEnum.Ok, Icon.Warning)
                     .Show();
                 return;
             }

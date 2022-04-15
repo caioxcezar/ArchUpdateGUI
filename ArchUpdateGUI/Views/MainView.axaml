@@ -9,7 +9,7 @@
         <Grid DockPanel.Dock="Top" ColumnDefinitions=".15*, .7*, .05*, .05*, .05*"
               RowDefinitions="Auto,Auto,Auto,Auto,Auto" Margin="4">
             <Panel Name="cbo" Margin="0,0,5,0">
-                <ComboBox Width="{Binding #cbo.Bounds.Width}" Margin="0,0,5,0" Grid.Row="0" Grid.Column="0"
+                <ComboBox Width="{Binding #cbo.Bounds.Width}" Margin="0,0,5,0"
                           Items="{Binding Providers}" SelectedItem="{Binding Provider}">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
