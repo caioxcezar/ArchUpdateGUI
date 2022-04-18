@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Security;
 using System.Threading.Tasks;
 using ArchUpdateGUI.Models;
-using DynamicData;
 using MessageBox.Avalonia;
 using MessageBox.Avalonia.Enums;
 using ReactiveUI;
@@ -17,17 +17,18 @@ namespace ArchUpdateGUI.ViewModels;
 public class MainViewModel : ViewModelBase
 {
     
-    public SmartCollection<Package> Packages { get; private set; }
+    public SmartCollection<Package> Packages { get; }
+    public static ObservableCollection<Package>? ChangedPackages { get; private set; }
     private string _searchParam = "";
     private IProvider? _provider;
     private List<IProvider> _providers = new();
     private string _info = "Select a provider. ";
     private string _packageInfo = "";
     private Package? _selectedPackage;
-    private string _commandText = "";
-    private bool _commandVisibility;
+    private bool _canExecute;
     public MainViewModel(MainWindowViewModel model) : base(model)
     {
+        ChangedPackages = new();
         Packages = new();
         ShowPassword = new();
         Packages = new();
@@ -37,9 +38,18 @@ public class MainViewModel : ViewModelBase
         this.WhenAnyValue(props => props.SearchParam).Where(param => !string.IsNullOrWhiteSpace(param))
             .Throttle(TimeSpan.FromMilliseconds(400)).ObserveOn(RxApp.MainThreadScheduler).Subscribe(_ => Search());
 
-        IObservable<bool> canExecute = this.WhenAnyValue(props => props.CommandText, action => !string.IsNullOrWhiteSpace(action));
+        IObservable<bool> canExecute = this.WhenAnyValue(props => props.CanExecute, Selector);
 
         CommandAction = ReactiveCommand.CreateFromTask(InnerCommandAction, canExecute);
+        
+        ChangedPackages.CollectionChanged += ChangedPackagesOnCollectionChanged;
+    }
+
+    private bool Selector(bool arg) => arg;
+
+    private void ChangedPackagesOnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        CanExecute = ChangedPackages.Count > 0;
     }
 
     private async Task InnerCommandAction()
@@ -54,35 +64,29 @@ public class MainViewModel : ViewModelBase
                 return;
             }
         }
-
         try
         {
-            switch (CommandText)
-            {
-                case "Install":
-                    ShowTerminal($"Instaling {SelectedPackage!.Name}", action =>
-                    {
-                        var exitCode = Provider.Install(pass, SelectedPackage,
-                            action.Invoke,
-                            action.Invoke).Result;
-                        action.Invoke(Command.ExitCodeName(exitCode));
-                        Reload();
-                    });
-                    break;
-                case "Remove":
-                    ShowTerminal($"Removing {SelectedPackage!.Name}",action =>
-                    {
-                        var exitCode = Provider.Remove(pass, SelectedPackage,
-                            action.Invoke,
-                            action.Invoke).Result;
-                        action.Invoke(Command.ExitCodeName(exitCode));
-                        Reload();
-                    });
-                    break;
-                default:
-                    await MessageBoxManager.GetMessageBoxStandardWindow("A error has occurred", "Invalid Option. ", ButtonEnum.Ok, Icon.Warning).Show();
-                    break;
-            }
+            var install = ChangedPackages.Where(e => e.IsInstalled).ToList();
+            var uninstall = ChangedPackages.Where(e => !e.IsInstalled).ToList();
+            if (install.Count > 0)
+                ShowTerminal($"Instaling {SelectedPackage!.Name}", action =>
+                {
+                    var exitCode = Provider.Install(pass, install,
+                        action.Invoke,
+                        action.Invoke).Result;
+                    action.Invoke(Command.ExitCodeName(exitCode));
+                    Reload();
+                });
+            if(uninstall.Count > 0)
+                ShowTerminal($"Removing {SelectedPackage!.Name}",action =>
+                {
+                    var exitCode = Provider.Remove(pass, uninstall,
+                        action.Invoke,
+                        action.Invoke).Result;
+                    action.Invoke(Command.ExitCodeName(exitCode));
+                    Reload();
+                });
+            ChangedPackages.Clear();
         }
         catch (Exception e)
         {
@@ -138,14 +142,8 @@ public class MainViewModel : ViewModelBase
     {
         try
         {
-            if (package == null)
-            {
-                CommandVisibility = false;
-                return;
-            }
+            if (package == null) return;
             PackageInfo = Provider!.PackageInfo(package);
-            CommandText = package.IsInstalled ? "Remove" : "Install";
-            CommandVisibility = true;
         }
         catch (Exception e)
         {
@@ -256,16 +254,10 @@ public class MainViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _selectedPackage, value);
     }
     
-    public string CommandText
+    public bool CanExecute
     {
-        get => _commandText;
-        set => this.RaiseAndSetIfChanged(ref _commandText, value);
-    }
-    
-    public bool CommandVisibility
-    {
-        get => _commandVisibility;
-        set => this.RaiseAndSetIfChanged(ref _commandVisibility, value);
+        get => _canExecute;
+        set => this.RaiseAndSetIfChanged(ref _canExecute, value);
     }
     
     public ReactiveCommand<Unit, Unit> CommandAction { get; }

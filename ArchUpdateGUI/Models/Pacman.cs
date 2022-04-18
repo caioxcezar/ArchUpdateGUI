@@ -46,11 +46,11 @@ public class Pacman : IProvider
         return result.Output;
     }
 
-    public Task<int> Install(SecureString? pass, Package package, Action<string?> output, Action<string?> error) =>
-        Command.Run($"echo '{pass!.SecureToString()}' | sudo -S pacman -Syu {package.Name} --noconfirm", output, error);
+    public Task<int> Install(SecureString? pass, IList<Package> packages, Action<string?> output, Action<string?> error) =>
+        Command.Run($"echo '{pass!.SecureToString()}' | sudo -S pacman -Syu {string.Join(' ', packages.Select(p => p.Name))} --noconfirm", output, error);
 
-    public Task<int> Remove(SecureString? pass, Package package, Action<string?> output, Action<string?> error) =>
-        Command.Run($"echo '{pass!.SecureToString()}' | sudo -S pacman -Rsu {package.Name} --noconfirm", output, error);
+    public Task<int> Remove(SecureString? pass, IList<Package> packages, Action<string?> output, Action<string?> error) =>
+        Command.Run($"echo '{pass!.SecureToString()}' | sudo -S pacman -Rsu {string.Join(' ', packages.Select(p => p.Name))} --noconfirm", output, error);
 
     public Task<int> Update(SecureString? pass, Action<string?> output, Action<string?> error) =>
         Command.Run($"echo '{pass!.SecureToString()}' | sudo -S pacman -Syu --noconfirm", output, error);

@@ -61,11 +61,11 @@ public class Flatpak : IProvider
             : result.Output;
     }
 
-    public Task<int> Install(SecureString? pass, Package package, Action<string?> output, Action<string?> error) => 
-        Command.Run($"flatpak install {package.QualifiedName} -y", output, error);
+    public Task<int> Install(SecureString? pass, IList<Package> packages, Action<string?> output, Action<string?> error) => 
+        Command.Run($"flatpak install {string.Join(' ', packages.Select(p => p.QualifiedName))} -y", output, error);
 
-    public Task<int> Remove(SecureString? pass, Package package, Action<string?> output, Action<string?> error) => 
-        Command.Run($"flatpak remove {package.QualifiedName} -y", output, error);
+    public Task<int> Remove(SecureString? pass, IList<Package> packages, Action<string?> output, Action<string?> error) => 
+        Command.Run($"flatpak remove {string.Join(' ', packages.Select(p => p.QualifiedName))} -y", output, error);
 
     public Command Version() => Command.Run($"flatpak --version");
 

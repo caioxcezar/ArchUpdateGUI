@@ -15,7 +15,7 @@ public interface IProvider
     void Load(bool cached);
     Command Version();
     string PackageInfo(Package package);
-    Task<int> Install(SecureString? pass, Package package, Action<string?> output, Action<string?> error);
-    Task<int> Remove(SecureString? pass, Package package, Action<string?> output, Action<string?> error);
+    Task<int> Install(SecureString? pass, IList<Package> package, Action<string?> output, Action<string?> error);
+    Task<int> Remove(SecureString? pass, IList<Package> package, Action<string?> output, Action<string?> error);
     Task<int> Update(SecureString? pass, Action<string?> output, Action<string?> error);
 }

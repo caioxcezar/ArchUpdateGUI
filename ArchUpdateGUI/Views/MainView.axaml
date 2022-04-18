@@ -8,8 +8,8 @@
     <DockPanel Margin="5">
         <Grid DockPanel.Dock="Top" ColumnDefinitions=".15*, .7*, .05*, .05*, .05*"
               RowDefinitions="Auto,Auto,Auto,Auto,Auto" Margin="4">
-            <Panel Name="cbo" Margin="0,0,5,0">
-                <ComboBox Width="{Binding #cbo.Bounds.Width}" Margin="0,0,5,0"
+            <Panel Name="Cbo" Margin="0,0,5,0">
+                <ComboBox Width="{Binding #Cbo.Bounds.Width}" Margin="0,0,5,0"
                           Items="{Binding Providers}" SelectedItem="{Binding Provider}">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
@@ -18,7 +18,7 @@
                     </ComboBox.ItemTemplate>
                 </ComboBox>
             </Panel>
-            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding SearchParam}" Watermark="Package Name " />
+            <TextBox Name="TextBoxSearch" Grid.Row="0" Grid.Column="1" Text="{Binding SearchParam}" Watermark="Package Name " />
             <Button Height="32" Command="{Binding Search}" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Center">
                 <i:Icon Value="fa fa-search" />
             </Button>
@@ -33,16 +33,15 @@
             <TextBox Height="300" IsReadOnly="True" Text="{Binding PackageInfo}" />
             <Panel Margin="0,5,0,5">
                 <Button HorizontalAlignment="Left" IsEnabled="{Binding CommandVisibility}"
-                        Command="{Binding CommandAction}" Content="{Binding CommandText}"
-                        IsVisible="{Binding CommandVisibility}" />
+                        Command="{Binding CommandAction}" Content="Execute Actions" />
                 <Button HorizontalAlignment="Right" Command="{Binding UpdateAll}" Content="Update All" />
             </Panel>
             <Label Content="{Binding Info}" />
         </StackPanel>
-        <DataGrid SelectedItem="{Binding SelectedPackage}" SelectionMode="Single" AutoGenerateColumns="False"
+        <DataGrid Name="DataGridPackages" SelectedItem="{Binding SelectedPackage}" SelectionMode="Single" AutoGenerateColumns="False"
                   Items="{Binding Packages}">
             <DataGrid.Columns>
-                <DataGridCheckBoxColumn IsReadOnly="True" Header="Installed" Binding="{Binding IsInstalled}" />
+                <DataGridCheckBoxColumn Header="Installed" Binding="{Binding IsInstalled}" />
                 <DataGridTextColumn IsReadOnly="True" Header="Repository" Binding="{Binding Repository}" />
                 <DataGridTextColumn IsReadOnly="True" Width=".1*" Header="Name" Binding="{Binding Name}" />
                 <DataGridTextColumn IsReadOnly="True" Header="Version" Binding="{Binding Version}" />

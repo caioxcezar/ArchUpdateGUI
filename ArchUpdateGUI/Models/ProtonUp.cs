@@ -39,11 +39,28 @@ public class ProtonUp : IProvider
         Installed = Packages.Count(p => p.IsInstalled);
     }
     public string PackageInfo(Package package) => Packages.First(p => p.Version == package.Version).Version ?? "";
-    public Task<int> Install(SecureString? pass, Package package, Action<string?> output, Action<string?> error) =>
-        Command.Run($"protonup -t {package.Version} -y", output, error);
 
-    public Task<int> Remove(SecureString? pass, Package package, Action<string?> output, Action<string?> error) =>
-        Command.Run($"protonup -r {package.Version} -y", output, error);
+    public Task<int> Install(SecureString? pass, IList<Package> packages, Action<string?> output, Action<string?> error)
+    {
+        foreach (var package in packages)
+        {
+            var exitcode = Command.Run($"protonup -t {package.Version} -y", output, error);
+            if (exitcode.Result != 0) return Task.FromResult(exitcode.Result);
+        }
+
+        return Task.FromResult(0);
+    }
+
+
+    public Task<int> Remove(SecureString? pass, IList<Package> packages, Action<string?> output, Action<string?> error)
+    {
+        foreach (var package in packages)
+        {
+            var exitcode = Command.Run($"protonup -r {package.Version} -y", output, error);
+            if (exitcode.Result != 0) return exitcode;
+        }
+        return Task.FromResult(0);
+    }
 
     public Task<int> Update(SecureString? pass, Action<string?> output, Action<string?> error) =>
         Command.Run("protonup -y", output, error);

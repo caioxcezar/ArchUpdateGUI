@@ -10,5 +10,6 @@
             <Button Grid.Column="0" Command="{Binding Back}"><i:Icon Value="fa fa-arrow-left"/></Button>
             <i:Icon Grid.Column="1" Value="fa fa-cog" FontSize="36"/><TextBlock Grid.Column="2" FontSize="36">Configurações</TextBlock>
         </Grid>
+        <Button Command="{Binding ClearCache}">Limpar Cache</Button>
     </StackPanel>
 </UserControl>
