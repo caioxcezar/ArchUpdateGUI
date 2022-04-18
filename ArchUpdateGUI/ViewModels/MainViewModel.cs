@@ -66,10 +66,10 @@ public class MainViewModel : ViewModelBase
         }
         try
         {
-            var install = ChangedPackages.Where(e => e.IsInstalled).ToList();
-            var uninstall = ChangedPackages.Where(e => !e.IsInstalled).ToList();
+            var install = ChangedPackages!.Where(e => e.IsInstalled).ToList();
+            var uninstall = ChangedPackages!.Where(e => !e.IsInstalled).ToList();
             if (install.Count > 0)
-                ShowTerminal($"Instaling {SelectedPackage!.Name}", action =>
+                ShowTerminal($"Instaling {string.Join(' ', install.Select(p => p.Name))}", action =>
                 {
                     var exitCode = Provider.Install(pass, install,
                         action.Invoke,
@@ -78,7 +78,7 @@ public class MainViewModel : ViewModelBase
                     Reload();
                 });
             if(uninstall.Count > 0)
-                ShowTerminal($"Removing {SelectedPackage!.Name}",action =>
+                ShowTerminal($"Removing {string.Join(' ', install.Select(p => p.Name))}",action =>
                 {
                     var exitCode = Provider.Remove(pass, uninstall,
                         action.Invoke,

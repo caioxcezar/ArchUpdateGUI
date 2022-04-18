@@ -8,8 +8,8 @@ namespace ArchUpdateGUI.Views;
 
 public partial class MainView : UserControl
 {
-    private DataGrid _dataGridPackages;
-    private Package? OldValue;
+    private DataGrid? _dataGridPackages;
+    private Package? _oldValue;
     public MainView()
     {
         InitializeComponent();
@@ -19,15 +19,15 @@ public partial class MainView : UserControl
     {
         AvaloniaXamlLoader.Load(this);
         _dataGridPackages = this.FindControl<DataGrid>("DataGridPackages");
-        _dataGridPackages.BeginningEdit += (_, args) => OldValue = ((Package)args.Row.DataContext!).Clone();
+        _dataGridPackages.BeginningEdit += (_, args) => _oldValue = ((Package)args.Row.DataContext!).Clone();
         _dataGridPackages.CellEditEnded += DataGrid_EventHandler;
     }
 
     private void DataGrid_EventHandler(object? sender, DataGridCellEditEndedEventArgs e)
     {
-        if (e.Row.DataContext == null || MainViewModel.ChangedPackages == null || OldValue == null) return;
+        if (e.Row.DataContext == null || MainViewModel.ChangedPackages == null || _oldValue == null) return;
         var cell = (Package) e.Row.DataContext;
-        if (cell.IsInstalled == OldValue.IsInstalled) return;
+        if (cell.IsInstalled == _oldValue.IsInstalled) return;
         if (MainViewModel.ChangedPackages
             .FirstOrOptional(p => p.QualifiedName == cell.QualifiedName || p.Name == cell.Name)
             .HasValue) MainViewModel.ChangedPackages.Remove(cell);
