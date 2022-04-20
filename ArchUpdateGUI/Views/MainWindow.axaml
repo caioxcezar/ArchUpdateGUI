@@ -10,7 +10,7 @@
         x:Class="ArchUpdateGUI.Views.MainWindow"
         Icon="/Assets/pacman_icon.ico"
         Title="ArchUpdateGUI"
-        FontFamily="/Assets/Hack_Regular_Nerd_Font_Complete_Mono.ttf">
+        FontFamily="/Assets/Hack_Regular_Nerd_Font_Complete_Mono.ttf#Hack Nerd Font Mono">
     <Design.DataContext>
         <vm:MainWindowViewModel/>
     </Design.DataContext>
