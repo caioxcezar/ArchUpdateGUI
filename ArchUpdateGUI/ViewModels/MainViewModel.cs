@@ -7,7 +7,7 @@ using System.Reactive;
 using System.Reactive.Linq;
 using System.Security;
 using System.Threading.Tasks;
-using ArchUpdateGUI.Models;
+using ArchUpdateGUI.Backend;
 using MessageBox.Avalonia;
 using MessageBox.Avalonia.Enums;
 using ReactiveUI;
@@ -16,7 +16,6 @@ namespace ArchUpdateGUI.ViewModels;
 
 public class MainViewModel : ViewModelBase
 {
-    
     public SmartCollection<Package> Packages { get; }
     public static ObservableCollection<Package>? ChangedPackages { get; private set; }
     private string _searchParam = "";
@@ -49,7 +48,7 @@ public class MainViewModel : ViewModelBase
 
     private void ChangedPackagesOnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        CanExecute = ChangedPackages.Count > 0;
+        CanExecute = ChangedPackages!.Count > 0;
     }
 
     private async Task InnerCommandAction()
@@ -86,7 +85,7 @@ public class MainViewModel : ViewModelBase
                     action.Invoke(Command.ExitCodeName(exitCode));
                     Reload();
                 });
-            ChangedPackages.Clear();
+            ChangedPackages!.Clear();
         }
         catch (Exception e)
         {
@@ -106,14 +105,19 @@ public class MainViewModel : ViewModelBase
         {
             if (provider == null) return;
             ShowLoading(true);
+            ChangedPackages!.Clear();
             await Task.Run(() => provider.Load(cached));
             Packages.Reset(provider.Packages);
             Info = $"packages {provider.Installed} installed of {provider.Total}";
-            ShowLoading(false);
         }
         catch (Exception e)
         {
-            await MessageBoxManager.GetMessageBoxStandardWindow("A error has occurred", e.Message, ButtonEnum.Ok, Icon.Error).Show();
+            await MessageBoxManager
+                .GetMessageBoxStandardWindow("A error has occurred", e.Message, ButtonEnum.Ok, Icon.Error).Show();
+        }
+        finally
+        {
+            ShowLoading(false);
         }
     }
     

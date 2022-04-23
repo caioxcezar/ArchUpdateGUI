@@ -1,24 +1,22 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Security;
-using System.Threading.Tasks;
-using ReactiveUI;
 
-namespace ArchUpdateGUI.Models;
+namespace ArchUpdateGUI.Backend.ProviderImpl;
 
-public class Yay : IProvider
+internal class Yay : IProvider
 {
     public string Name => "Yay - AUR Helper";
     public bool RootRequired => true;
-    public List<Package> Packages { get; private set; }
+    public List<Package> Packages { get; }
     public int Installed { get; private set; }
     public int Total { get; private set; }
 
-    public void Load(bool cached)
+    public Yay()
     {
         Packages = new();
+    }
+    public void Load(bool cached)
+    {
+        Packages.Clear();
         List<string> list = new();
         if (cached)
         {

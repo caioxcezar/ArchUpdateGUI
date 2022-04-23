@@ -1,4 +1,5 @@
-using ArchUpdateGUI.Models;
+using System;
+using ArchUpdateGUI.Backend;
 using ArchUpdateGUI.ViewModels;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
@@ -26,9 +27,10 @@ public partial class MainView : UserControl
     private void DataGrid_EventHandler(object? sender, DataGridCellEditEndedEventArgs e)
     {
         if (e.Row.DataContext == null || MainViewModel.ChangedPackages == null || _oldValue == null) return;
+        if (MainViewModel.ChangedPackages == null) throw new Exception("ChangedPackages not initiated wet. ");
         var cell = (Package) e.Row.DataContext;
         if (cell.IsInstalled == _oldValue.IsInstalled) return;
-        if (MainViewModel.ChangedPackages
+        if (MainViewModel.ChangedPackages!
             .FirstOrOptional(p => p.QualifiedName == cell.QualifiedName || p.Name == cell.Name)
             .HasValue) MainViewModel.ChangedPackages.Remove(cell);
         else

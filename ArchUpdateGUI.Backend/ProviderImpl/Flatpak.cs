@@ -1,23 +1,23 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security;
-using System.Threading.Tasks;
 using DynamicData.Kernel;
 
-namespace ArchUpdateGUI.Models;
+namespace ArchUpdateGUI.Backend.ProviderImpl;
 
-public class Flatpak : IProvider
+internal class Flatpak : IProvider
 {
     public string Name => "Flatpak";
     public bool RootRequired => false;
-    public List<Package> Packages { get; private set; }
+    public List<Package> Packages { get; }
     public int Installed { get; private set; }
     public int Total { get; private set; }
 
-    public void Load(bool cached)
+    public Flatpak()
     {
         Packages = new();
+    }
+    public void Load(bool cached)
+    {
+        Packages.Clear();
         var result = Command.Run("flatpak remotes");
         if (result.ExitCode != 0) throw new CommandException(result.Error);
         foreach (var remote in result.Output.Split('\n'))
@@ -43,10 +43,8 @@ public class Flatpak : IProvider
         result = Command.Run("flatpak list");
         if (result.ExitCode != 0) throw new CommandException(result.Error);
         var installedPackage = result.Output.Split('\n').Where(e => e.Split('\t').Length > 1).AsList();
-        Parallel.ForEach(Packages, package =>
-        {
-            package.IsInstalled = installedPackage.FirstOrOptional(e => e.Contains(package.Name)).HasValue;
-        });
+        foreach (var package in Packages)
+            package.IsInstalled = installedPackage.FirstOrOptional(e => e.Contains(package.Name!)).HasValue;
         Total = Packages.Count;
         Installed = installedPackage.Count;
     }

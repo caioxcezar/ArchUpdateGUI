@@ -1,25 +1,26 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security;
-using System.Threading.Tasks;
 using DynamicData.Kernel;
 
-namespace ArchUpdateGUI.Models;
+namespace ArchUpdateGUI.Backend.ProviderImpl;
 
-public class ProtonUp : IProvider
+internal class ProtonUp : IProvider
 {
     public string Name => "ProtonUp";
     public bool RootRequired => false;
-    public List<Package> Packages { get; private set; }
+    public List<Package> Packages { get; }
     public int Installed { get; private set; }
     public int Total { get; private set; }
 
+    public ProtonUp()
+    {
+        Packages = new();
+    }
     public void Load(bool cached)
     {
+        Packages.Clear();
         var result = Command.Run("protonup --releases");
         if (result.ExitCode != 0) throw new CommandException(result.Error);
-        Packages = result.Output.Split('\n')
+        Packages.AddRange(result.Output.Split('\n')
             .Where(p => !string.IsNullOrWhiteSpace(p))
             .Select(version => new Package
             {
@@ -27,7 +28,7 @@ public class ProtonUp : IProvider
                 Version = version,
                 Name = "Proton GE",
                 QualifiedName = $"Proton GE {version}"
-            }).ToList();
+            }));
         result = Command.Run("protonup -l");
         if (result.ExitCode != 0) throw new CommandException(result.Error);
         var installed = result.Output.Split("\n").ToList();

@@ -1,10 +1,8 @@
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 
-namespace ArchUpdateGUI.Models;
+namespace ArchUpdateGUI.Backend;
 
 public class SmartCollection<T> : ObservableCollection<T> 
 {

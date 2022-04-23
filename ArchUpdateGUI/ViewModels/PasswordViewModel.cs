@@ -1,8 +1,6 @@
 using System.Reactive;
 using System.Security;
-using ArchUpdateGUI.Models;
-using Avalonia.Controls;
-using Avalonia.Input;
+using ArchUpdateGUI.Backend;
 using ReactiveUI;
 
 namespace ArchUpdateGUI.ViewModels;
@@ -12,6 +10,7 @@ public class PasswordViewModel : ReactiveObject
     private string _password;
     public PasswordViewModel()
     {
+        _password = "";
         Ok = ReactiveCommand.Create(() =>
         {
             var result = Command.Run($"echo '{Password}' | sudo -S su");

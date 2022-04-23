@@ -1,9 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 
-namespace ArchUpdateGUI.Models;
+namespace ArchUpdateGUI.Backend;
 
 public class Providers
 {

@@ -1,23 +1,23 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security;
-using System.Threading.Tasks;
 
-namespace ArchUpdateGUI.Models;
+namespace ArchUpdateGUI.Backend.ProviderImpl;
 
-public class Pacman : IProvider
+internal class Pacman : IProvider
 {
     public string Name => "Pacman";
     public bool RootRequired => true;
 
-    public List<Package> Packages { get; private set; }
+    public List<Package> Packages { get; }
     public int Installed { get; private set; }
     public int Total { get; private set; }
 
-    public void Load(bool cached)
+    public Pacman()
     {
         Packages = new();
+    }
+    public void Load(bool cached)
+    {
+        Packages.Clear();
         var result = Command.Run("pacman -Sl");
         if (result.ExitCode != 0) throw new CommandException(result.Error);
         string[] list = result.Output.Split('\n');

@@ -1,9 +1,6 @@
-using System;
-using System.Collections.Generic;
 using System.Security;
-using System.Threading.Tasks;
 
-namespace ArchUpdateGUI.Models;
+namespace ArchUpdateGUI.Backend;
 
 public interface IProvider
 {

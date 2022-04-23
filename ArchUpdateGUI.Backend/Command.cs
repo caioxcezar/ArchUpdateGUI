@@ -1,15 +1,18 @@
-using System;
 using System.Diagnostics;
-using System.Linq;
-using System.Security;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace ArchUpdateGUI.Models;
+namespace ArchUpdateGUI.Backend;
 
 public class Command
 {
-    public int? ExitCode { get; private set; }
+    private Command()
+    {
+        ExitCode = -1;
+        Output = "";
+        Error = "";
+    }
+
+    public int ExitCode { get; private set; }
     public string Output { get; private set; }
     public string Error { get; private set; }
     
@@ -68,11 +71,12 @@ public class Command
 
     public static string ExitCodeName(int exitCode) => exitCode switch
     {
+        -1 => "No command",
         0 => "Successful",
-        1 => "General Error",
+        1 => "General error",
         2 => "Misuse of shell builtins",
         126 => "Command cannot be executed",
-        127 => "command not found",
+        127 => "Command not found",
         128 => "Invalid argument to exit",
         130 => "Script terminated by Control-C",
         _ => Enumerable.Range(0, 255).Contains(exitCode)

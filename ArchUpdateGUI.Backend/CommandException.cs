@@ -1,6 +1,4 @@
-using System;
-
-namespace ArchUpdateGUI.Models;
+namespace ArchUpdateGUI.Backend;
 
 public class CommandException : Exception
 {
