@@ -11,6 +11,7 @@ public partial class MainView : UserControl
 {
     private DataGrid? _dataGridPackages;
     private Package? _oldValue;
+
     public MainView()
     {
         InitializeComponent();
@@ -20,7 +21,7 @@ public partial class MainView : UserControl
     {
         AvaloniaXamlLoader.Load(this);
         _dataGridPackages = this.FindControl<DataGrid>("DataGridPackages");
-        _dataGridPackages.BeginningEdit += (_, args) => _oldValue = ((Package)args.Row.DataContext!).Clone();
+        _dataGridPackages.BeginningEdit += (_, args) => _oldValue = ((Package) args.Row.DataContext!).Clone();
         _dataGridPackages.CellEditEnded += DataGrid_EventHandler;
     }
 
@@ -30,10 +31,9 @@ public partial class MainView : UserControl
         if (MainViewModel.ChangedPackages == null) throw new Exception("ChangedPackages not initiated wet. ");
         var cell = (Package) e.Row.DataContext;
         if (cell.IsInstalled == _oldValue.IsInstalled) return;
-        if (MainViewModel.ChangedPackages!
-            .FirstOrOptional(p => p.QualifiedName == cell.QualifiedName || p.Name == cell.Name)
-            .HasValue) MainViewModel.ChangedPackages.Remove(cell);
-        else
-            MainViewModel.ChangedPackages.Add(cell.Clone());
+        var value = MainViewModel.ChangedPackages.FirstOrOptional(p =>
+            p.QualifiedName == cell.QualifiedName && p.Name == cell.Name);
+        if (value.HasValue) MainViewModel.ChangedPackages.Remove(value.Value);
+        else MainViewModel.ChangedPackages.Add(cell.Clone());
     }
 }
