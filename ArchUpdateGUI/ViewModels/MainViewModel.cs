@@ -34,8 +34,8 @@ public class MainViewModel : ViewModelBase
         Providers = new Providers().List;
         this.WhenAnyValue(props => props.Provider).Subscribe(provider => ChangedProvider(provider, true));
         this.WhenAnyValue(props => props.SelectedPackage).Subscribe(ChangedPackage);
-        this.WhenAnyValue(props => props.SearchParam).Where(param => !string.IsNullOrWhiteSpace(param))
-            .Throttle(TimeSpan.FromMilliseconds(400)).ObserveOn(RxApp.MainThreadScheduler).Subscribe(_ => Search());
+        this.WhenAnyValue(props => props.SearchParam).Throttle(TimeSpan.FromMilliseconds(400))
+            .ObserveOn(RxApp.MainThreadScheduler).Subscribe(Search);
 
         IObservable<bool> canExecute = this.WhenAnyValue(props => props.CanExecute, Selector);
 
@@ -109,6 +109,7 @@ public class MainViewModel : ViewModelBase
             await Task.Run(() => provider.Load(cached));
             Packages.Reset(provider.Packages);
             Info = $"packages {provider.Installed} installed of {provider.Total}";
+            Search(SearchParam);
         }
         catch (Exception e)
         {
@@ -132,14 +133,15 @@ public class MainViewModel : ViewModelBase
             await MessageBoxManager.GetMessageBoxStandardWindow("A error has occurred", e.Message, ButtonEnum.Ok, Icon.Error).Show();
         }
     }
-    
-    public void Search()
+
+    public void Search(string param)
     {
         if (Provider == null) return;
-        var filteredList = Provider.Packages.Where(package =>
-            package.Name != null && package.Name.ToLower().Contains(SearchParam.ToLower()));
-        Packages.Clear();
-        Packages.AddRange(filteredList);
+        var filteredList = param.Trim() == ""
+            ? Provider.Packages
+            : Provider.Packages.Where(package =>
+                package.Name != null && package.Name.ToLower().Contains(param.ToLower()));
+        Packages.Reset(filteredList);
     }
     
     public void ChangedPackage(Package? package)

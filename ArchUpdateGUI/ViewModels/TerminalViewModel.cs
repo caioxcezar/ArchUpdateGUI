@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ReactiveUI;
@@ -14,7 +15,7 @@ public class TerminalViewModel : ViewModelBase
     public TerminalViewModel(MainWindowViewModel main, string title, Action<Action<string?>> action) : base(main)
     {
         Title = title;
-        Task.Run(() => action.Invoke(str => TerminalText = str + TerminalText)).ContinueWith(_ => BackEnabled = true);
+        Task.Run(() => action.Invoke(str => TerminalText = TerminalText.Insert(0, str))).ContinueWith(_ => BackEnabled = true);
     }
 
     public string TerminalText

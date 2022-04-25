@@ -53,7 +53,7 @@ internal class Pacman : IProvider
         Command.Run($"echo '{pass!.SecureToString()}' | sudo -S pacman -Rsu {string.Join(' ', packages.Select(p => p.Name))} --noconfirm", output, error);
 
     public Task<int> Update(SecureString? pass, Action<string?> output, Action<string?> error) =>
-        Command.Run($"echo '{pass!.SecureToString()}' | sudo -S pacman -Syu --noconfirm", output, error);
+        Command.Run($"echo '{pass!.SecureToString()}' | sudo -S pacman -Syy --noconfirm", output, error);
 
     public Command Version() => Command.Run("pacman --version");
 }
