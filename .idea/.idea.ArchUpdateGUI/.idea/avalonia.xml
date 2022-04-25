@@ -3,17 +3,17 @@
   <component name="AvaloniaProject">
     <option name="projectPerEditor">
       <map>
-        <entry key="ArchUpdateGUI/App.axaml" value="ArchUpdateGUI/ArchUpdateGUI.csproj" />
-        <entry key="ArchUpdateGUI/Views/ConfigView.axaml" value="ArchUpdateGUI/ArchUpdateGUI.csproj" />
-        <entry key="ArchUpdateGUI/Views/ConfigViewModel.axaml" value="ArchUpdateGUI/ArchUpdateGUI.csproj" />
-        <entry key="ArchUpdateGUI/Views/LoadingView.axaml" value="ArchUpdateGUI/ArchUpdateGUI.csproj" />
-        <entry key="ArchUpdateGUI/Views/MainUserControl.axaml" value="ArchUpdateGUI/ArchUpdateGUI.csproj" />
-        <entry key="ArchUpdateGUI/Views/MainUserControlView.axaml" value="ArchUpdateGUI/ArchUpdateGUI.csproj" />
-        <entry key="ArchUpdateGUI/Views/MainView.axaml" value="ArchUpdateGUI/ArchUpdateGUI.csproj" />
-        <entry key="ArchUpdateGUI/Views/MainWindow.axaml" value="ArchUpdateGUI/ArchUpdateGUI.csproj" />
-        <entry key="ArchUpdateGUI/Views/PasswordView.axaml" value="ArchUpdateGUI/ArchUpdateGUI.csproj" />
-        <entry key="ArchUpdateGUI/Views/PasswordWindow.axaml" value="ArchUpdateGUI/ArchUpdateGUI.csproj" />
-        <entry key="ArchUpdateGUI/Views/TerminalView.axaml" value="ArchUpdateGUI/ArchUpdateGUI.csproj" />
+        <entry key="UpdaterGUI/App.axaml" value="UpdaterGUI/UpdaterGUI.csproj" />
+        <entry key="UpdaterGUI/Views/ConfigView.axaml" value="UpdaterGUI/UpdaterGUI.csproj" />
+        <entry key="UpdaterGUI/Views/ConfigViewModel.axaml" value="UpdaterGUI/UpdaterGUI.csproj" />
+        <entry key="UpdaterGUI/Views/LoadingView.axaml" value="UpdaterGUI/UpdaterGUI.csproj" />
+        <entry key="UpdaterGUI/Views/MainUserControl.axaml" value="UpdaterGUI/UpdaterGUI.csproj" />
+        <entry key="UpdaterGUI/Views/MainUserControlView.axaml" value="UpdaterGUI/UpdaterGUI.csproj" />
+        <entry key="UpdaterGUI/Views/MainView.axaml" value="UpdaterGUI/UpdaterGUI.csproj" />
+        <entry key="UpdaterGUI/Views/MainWindow.axaml" value="UpdaterGUI/UpdaterGUI.csproj" />
+        <entry key="UpdaterGUI/Views/PasswordView.axaml" value="UpdaterGUI/UpdaterGUI.csproj" />
+        <entry key="UpdaterGUI/Views/PasswordWindow.axaml" value="UpdaterGUI/UpdaterGUI.csproj" />
+        <entry key="UpdaterGUI/Views/TerminalView.axaml" value="UpdaterGUI/UpdaterGUI.csproj" />
       </map>
     </option>
   </component>
