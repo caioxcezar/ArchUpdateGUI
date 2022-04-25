@@ -1,0 +1,19 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:i="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="UpdaterGUI.Views.TerminalView">
+    <DockPanel Margin="5">
+        <Panel Margin="0,0,0,5" DockPanel.Dock="Top">
+            <Button IsEnabled="{Binding BackEnabled}" Command="{Binding Back}">
+                <i:Icon Value="fa fa-arrow-left" />
+            </Button>
+            <TextBlock TextAlignment="Center" Text="{Binding Title}"/>
+        </Panel>
+        <Panel>
+            <TextBox Height="{Binding $parent[Panel].Bounds.Height}" IsReadOnly="True" Text="{Binding TerminalText}" />
+        </Panel>
+    </DockPanel>
+</UserControl>
