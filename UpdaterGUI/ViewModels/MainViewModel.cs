@@ -25,6 +25,8 @@ public class MainViewModel : ViewModelBase
     private string _packageInfo = "";
     private Package? _selectedPackage;
     private bool _canExecute;
+    private SecureString? _password;
+
     public MainViewModel(MainWindowViewModel model) : base(model)
     {
         ChangedPackages = new();
@@ -53,24 +55,15 @@ public class MainViewModel : ViewModelBase
 
     private async Task InnerCommandAction()
     {
-        SecureString? pass = null;
-        if (Provider!.RootRequired)
-        {
-            pass = await ShowPassword.Handle(new PasswordViewModel());
-            if (pass == null)
-            {
-                await MessageBoxManager.GetMessageBoxStandardWindow("A error has occurred", "Invalid Password. ", ButtonEnum.Ok, Icon.Warning).Show();
-                return;
-            }
-        }
         try
         {
+            await UpdatePassword();
             var install = ChangedPackages!.Where(e => e.IsInstalled).ToList();
             var uninstall = ChangedPackages!.Where(e => !e.IsInstalled).ToList();
             if (install.Count > 0)
-                ShowTerminal($"Instaling {string.Join(' ', install.Select(p => p.Name))}", action =>
+                ShowTerminal($"Installing {string.Join(' ', install.Select(p => p.Name))}", action =>
                 {
-                    var exitCode = Provider.Install(pass, install,
+                    var exitCode = Provider!.Install(_password, install,
                         action.Invoke,
                         action.Invoke).Result;
                     action.Invoke(Command.ExitCodeName(exitCode));
@@ -79,7 +72,7 @@ public class MainViewModel : ViewModelBase
             if(uninstall.Count > 0)
                 ShowTerminal($"Removing {string.Join(' ', install.Select(p => p.Name))}",action =>
                 {
-                    var exitCode = Provider.Remove(pass, uninstall,
+                    var exitCode = Provider!.Remove(_password, uninstall,
                         action.Invoke,
                         action.Invoke).Result;
                     action.Invoke(Command.ExitCodeName(exitCode));
@@ -165,9 +158,8 @@ public class MainViewModel : ViewModelBase
     {
         try
         {
-            if (Provider == null) return;
-            var pass = Provider!.RootRequired ? await ShowPassword.Handle(new PasswordViewModel()) : null;
-            if (pass == null && Provider.RootRequired)
+            await UpdatePassword();
+            if (_password == null && Provider!.RootRequired)
             {
                 await MessageBoxManager
                     .GetMessageBoxStandardWindow("Wrong password",
@@ -175,9 +167,9 @@ public class MainViewModel : ViewModelBase
                     .Show();
                 return;
             }
-            ShowTerminal($"Updating {Provider.Name}", action =>
+            ShowTerminal($"Updating {Provider!.Name}", action =>
             {
-                var exitCode = Provider.Update(pass, 
+                var exitCode = Provider.Update(_password, 
                     action.Invoke, 
                     action.Invoke).Result;
                action.Invoke(Command.ExitCodeName(exitCode));
@@ -196,34 +188,30 @@ public class MainViewModel : ViewModelBase
 
     public async void UpdateAll()
     {
-        SecureString? pass = null;
-        if (Providers.FirstOrDefault(p => p.RootRequired) != null)
-        {
-            pass = await ShowPassword.Handle(new PasswordViewModel());
-            if (pass == null)
-            {
-                await MessageBoxManager
-                    .GetMessageBoxStandardWindow("Wrong password",
-                        $"Please provide the correct password. ", ButtonEnum.Ok, Icon.Warning)
-                    .Show();
-                return;
-            }
-        }
+        if (Providers.FirstOrDefault(p => p.RootRequired) != null) await UpdatePassword();
         ShowTerminal("Updating",action =>
         {
             foreach (var provider in Providers)
             {
                 Command.Run("sudo -k");
                 action.Invoke($"►▻►{provider.Name}\n");
-                var exitCode = provider.Update(pass,
+                var exitCode = provider.Update(_password,
                     action.Invoke,
                     action.Invoke).Result;
                 action.Invoke($"{Command.ExitCodeName(exitCode)}\n");
-                //Reload(provider);
             }
         });
     }
-    
+
+    private async Task UpdatePassword()
+    {
+        if (Provider is {RootRequired: false} && _password != null) return;
+        _password = await ShowPassword.Handle(new PasswordViewModel());
+        if (_password == null)
+            await MessageBoxManager.GetMessageBoxStandardWindow("A error has occurred", "Invalid Password. ",
+                ButtonEnum.Ok, Icon.Warning).Show();
+    }
+
     public IProvider? Provider
     {
         get => _provider;
@@ -265,7 +253,7 @@ public class MainViewModel : ViewModelBase
         get => _canExecute;
         set => this.RaiseAndSetIfChanged(ref _canExecute, value);
     }
-    
+
     public ReactiveCommand<Unit, Unit> CommandAction { get; }
     public Interaction<PasswordViewModel, SecureString?> ShowPassword { get; }
 }
