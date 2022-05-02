@@ -159,14 +159,6 @@ public class MainViewModel : ViewModelBase
         try
         {
             await UpdatePassword();
-            if (_password == null && Provider!.RootRequired)
-            {
-                await MessageBoxManager
-                    .GetMessageBoxStandardWindow("Wrong password",
-                        $"Please provide the correct password. ", ButtonEnum.Ok, Icon.Warning)
-                    .Show();
-                return;
-            }
             ShowTerminal($"Updating {Provider!.Name}", action =>
             {
                 var exitCode = Provider.Update(_password, 
@@ -188,7 +180,16 @@ public class MainViewModel : ViewModelBase
 
     public async void UpdateAll()
     {
-        if (Providers.FirstOrDefault(p => p.RootRequired) != null) await UpdatePassword();
+        if (Providers.FirstOrDefault(p => p.RootRequired) != null && _password == null)
+        {
+            _password = await ShowPassword.Handle(new PasswordViewModel());
+            if (_password == null)
+            {
+                await MessageBoxManager.GetMessageBoxStandardWindow("A error has occurred", "Invalid Password. ",
+                    ButtonEnum.Ok, Icon.Warning).Show();
+                return;
+            }
+        }
         ShowTerminal("Updating",action =>
         {
             foreach (var provider in Providers)
@@ -205,7 +206,7 @@ public class MainViewModel : ViewModelBase
 
     private async Task UpdatePassword()
     {
-        if (Provider is {RootRequired: false} && _password != null) return;
+        if (Provider is {RootRequired: false} || _password != null) return;
         _password = await ShowPassword.Handle(new PasswordViewModel());
         if (_password == null)
             await MessageBoxManager.GetMessageBoxStandardWindow("A error has occurred", "Invalid Password. ",
