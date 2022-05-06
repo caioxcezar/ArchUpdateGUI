@@ -8,8 +8,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4c932dc5-ae62-468c-b800-bbe31af0a9d5" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/UpdaterGUI.Backend/ProviderImpl/Paru.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.UpdaterGUI/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.UpdaterGUI/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UpdaterGUI/App.axaml" beforeDir="false" afterPath="$PROJECT_DIR$/UpdaterGUI/App.axaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/UpdaterGUI/ViewModels/MainViewModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/UpdaterGUI/ViewModels/MainViewModel.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -34,11 +34,12 @@
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;XThreadsFramesViewSplitterKey&quot;: &quot;0.07186545&quot;,
+    &quot;XThreadsFramesViewSplitterKey&quot;: &quot;0.03975535&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.sourceCode.C#&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
@@ -79,6 +80,9 @@
       <workItem from="1651176635695" duration="20000" />
       <workItem from="1651177432984" duration="1663000" />
       <workItem from="1651457683861" duration="648000" />
+      <workItem from="1651462669283" duration="267000" />
+      <workItem from="1651590659268" duration="103000" />
+      <workItem from="1651797436796" duration="450000" />
     </task>
     <task id="LOCAL-00001" summary="- Atualizar imagem.&#10;- Code">
       <created>1650918083410</created>
@@ -87,7 +91,14 @@
       <option name="project" value="LOCAL" />
       <updated>1650918083410</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Add Paru, bug ao atualizar todos os pacotes">
+      <created>1651462905219</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1651462905219</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -110,7 +121,8 @@
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
     <MESSAGE value="- Atualizar imagem.&#10;- Code" />
-    <option name="LAST_COMMIT_MESSAGE" value="- Atualizar imagem.&#10;- Code" />
+    <MESSAGE value="Add Paru, bug ao atualizar todos os pacotes" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add Paru, bug ao atualizar todos os pacotes" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -146,13 +158,26 @@
           <line>84</line>
           <properties documentPath="$PROJECT_DIR$/UpdaterGUI/ViewModels/MainViewModel.cs" initialLine="84" containingFunctionPresentation="method 'InnerCommandAction'">
             <startOffsets>
-              <option value="3193" />
+              <option value="3375" />
             </startOffsets>
             <endOffsets>
-              <option value="3314" />
+              <option value="3496" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="5" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/UpdaterGUI/ViewModels/MainViewModel.cs</url>
+          <line>182</line>
+          <properties documentPath="$PROJECT_DIR$/UpdaterGUI/ViewModels/MainViewModel.cs" initialLine="182" containingFunctionPresentation="method 'UpdateAll'">
+            <startOffsets>
+              <option value="6376" />
+            </startOffsets>
+            <endOffsets>
+              <option value="6455" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="6" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

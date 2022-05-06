@@ -24,7 +24,7 @@
                     <Button Height="32" Width="32" Command="{Binding OpenConfig}">
                         <i:Icon Value="fa fa-cog" />
                     </Button>
-                    <Button Height="32" Width="32" Command="{Binding Update}">
+                    <Button Height="32" Width="32" Command="{Binding CommandUpdate}">
                         <i:Icon Value="fa fa-sync" />
                     </Button>
                 </StackPanel>

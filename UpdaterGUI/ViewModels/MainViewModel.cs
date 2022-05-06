@@ -39,14 +39,14 @@ public class MainViewModel : ViewModelBase
         this.WhenAnyValue(props => props.SearchParam).Throttle(TimeSpan.FromMilliseconds(800))
             .ObserveOn(RxApp.MainThreadScheduler).Subscribe(Search);
 
-        IObservable<bool> canExecute = this.WhenAnyValue(props => props.CanExecute, Selector);
+        IObservable<bool> canCommandAction = this.WhenAnyValue(props => props.CanExecute, bool (arg) => arg);
+        CommandAction = ReactiveCommand.CreateFromTask(InnerCommandAction, canCommandAction);
 
-        CommandAction = ReactiveCommand.CreateFromTask(InnerCommandAction, canExecute);
-        
+        IObservable<bool> canCommandUpdate = this.WhenAnyValue(props => props.Provider, bool (IProvider? arg) => arg != null);
+        CommandUpdate = ReactiveCommand.CreateFromTask(InnerUpdate, canCommandUpdate);
+
         ChangedPackages.CollectionChanged += ChangedPackagesOnCollectionChanged;
     }
-
-    private bool Selector(bool arg) => arg;
 
     private void ChangedPackagesOnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
@@ -154,7 +154,7 @@ public class MainViewModel : ViewModelBase
     }
 
     
-    public async void Update()
+    private async Task InnerUpdate()
     {
         try
         {
@@ -256,5 +256,6 @@ public class MainViewModel : ViewModelBase
     }
 
     public ReactiveCommand<Unit, Unit> CommandAction { get; }
+    public ReactiveCommand<Unit, Unit> CommandUpdate { get; }
     public Interaction<PasswordViewModel, SecureString?> ShowPassword { get; }
 }
