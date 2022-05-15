@@ -9,8 +9,10 @@
   <component name="ChangeListManager">
     <list default="true" id="4c932dc5-ae62-468c-b800-bbe31af0a9d5" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.UpdaterGUI/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.UpdaterGUI/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UpdaterGUI/App.axaml" beforeDir="false" afterPath="$PROJECT_DIR$/UpdaterGUI/App.axaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/UpdaterGUI/ViewModels/MainViewModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/UpdaterGUI/ViewModels/MainViewModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UpdaterGUI/ViewModels/PasswordViewModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/UpdaterGUI/ViewModels/PasswordViewModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UpdaterGUI/Views/MainWindow.axaml" beforeDir="false" afterPath="$PROJECT_DIR$/UpdaterGUI/Views/MainWindow.axaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UpdaterGUI/Views/PasswordWindow.axaml" beforeDir="false" afterPath="$PROJECT_DIR$/UpdaterGUI/Views/PasswordWindow.axaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -18,6 +20,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/0911bf4c34584f72b3a5df63353953807a400/ec/b7bae4ab/Regex.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/561ced8b57494f62b40e74b63cdb198d94ac00/e3/7dad570d/ThrowHelper.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
@@ -82,7 +85,14 @@
       <workItem from="1651457683861" duration="648000" />
       <workItem from="1651462669283" duration="267000" />
       <workItem from="1651590659268" duration="103000" />
-      <workItem from="1651797436796" duration="450000" />
+      <workItem from="1651797436796" duration="822000" />
+      <workItem from="1651798276217" duration="289000" />
+      <workItem from="1651859381809" duration="7000" />
+      <workItem from="1651864741023" duration="1008000" />
+      <workItem from="1652408083382" duration="589000" />
+      <workItem from="1652634897068" duration="422000" />
+      <workItem from="1652635395619" duration="141000" />
+      <workItem from="1652638949232" duration="260000" />
     </task>
     <task id="LOCAL-00001" summary="- Atualizar imagem.&#10;- Code">
       <created>1650918083410</created>
@@ -98,7 +108,14 @@
       <option name="project" value="LOCAL" />
       <updated>1651462905219</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Desativar botão de update quando não tem repositório selecionádo.">
+      <created>1651798219165</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1651798219165</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -122,7 +139,8 @@
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
     <MESSAGE value="- Atualizar imagem.&#10;- Code" />
     <MESSAGE value="Add Paru, bug ao atualizar todos os pacotes" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add Paru, bug ao atualizar todos os pacotes" />
+    <MESSAGE value="Desativar botão de update quando não tem repositório selecionádo." />
+    <option name="LAST_COMMIT_MESSAGE" value="Desativar botão de update quando não tem repositório selecionádo." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -155,29 +173,29 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/UpdaterGUI/ViewModels/MainViewModel.cs</url>
-          <line>84</line>
-          <properties documentPath="$PROJECT_DIR$/UpdaterGUI/ViewModels/MainViewModel.cs" initialLine="84" containingFunctionPresentation="method 'InnerCommandAction'">
+          <line>188</line>
+          <properties documentPath="$PROJECT_DIR$/UpdaterGUI/ViewModels/MainViewModel.cs" initialLine="184" containingFunctionPresentation="method 'UpdateAll'">
             <startOffsets>
-              <option value="3375" />
+              <option value="6583" />
             </startOffsets>
             <endOffsets>
-              <option value="3496" />
+              <option value="6646" />
             </endOffsets>
           </properties>
-          <option name="timeStamp" value="5" />
+          <option name="timeStamp" value="8" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/UpdaterGUI/ViewModels/MainViewModel.cs</url>
-          <line>182</line>
-          <properties documentPath="$PROJECT_DIR$/UpdaterGUI/ViewModels/MainViewModel.cs" initialLine="182" containingFunctionPresentation="method 'UpdateAll'">
+          <line>212</line>
+          <properties documentPath="$PROJECT_DIR$/UpdaterGUI/ViewModels/MainViewModel.cs" initialLine="208" containingFunctionPresentation="method 'UpdatePassword'">
             <startOffsets>
-              <option value="6376" />
+              <option value="7424" />
             </startOffsets>
             <endOffsets>
-              <option value="6455" />
+              <option value="7483" />
             </endOffsets>
           </properties>
-          <option name="timeStamp" value="6" />
+          <option name="timeStamp" value="10" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

@@ -57,25 +57,29 @@ public class MainViewModel : ViewModelBase
     {
         try
         {
-            await UpdatePassword();
+            if(!await UpdatePassword()) return;
             var install = ChangedPackages!.Where(e => e.IsInstalled).ToList();
             var uninstall = ChangedPackages!.Where(e => !e.IsInstalled).ToList();
-            if (install.Count > 0)
+            if (install.Count > 0 || uninstall.Count > 0)
                 ShowTerminal($"Installing {string.Join(' ', install.Select(p => p.Name))}", action =>
                 {
-                    var exitCode = Provider!.Install(_password, install,
-                        action.Invoke,
-                        action.Invoke).Result;
-                    action.Invoke(Command.ExitCodeName(exitCode));
-                    Reload();
-                });
-            if(uninstall.Count > 0)
-                ShowTerminal($"Removing {string.Join(' ', install.Select(p => p.Name))}",action =>
-                {
-                    var exitCode = Provider!.Remove(_password, uninstall,
-                        action.Invoke,
-                        action.Invoke).Result;
-                    action.Invoke(Command.ExitCodeName(exitCode));
+                    int exitCode;
+                    if (install.Count > 0)
+                    {
+                        exitCode = Provider!.Install(_password, install,
+                            action.Invoke,
+                            action.Invoke).Result;
+                        action.Invoke(Command.ExitCodeName(exitCode));
+                    }
+
+                    if (uninstall.Count > 0)
+                    {
+                        
+                        exitCode = Provider!.Remove(_password, uninstall,
+                            action.Invoke,
+                            action.Invoke).Result;
+                        action.Invoke(Command.ExitCodeName(exitCode));
+                    }
                     Reload();
                 });
             ChangedPackages!.Clear();
@@ -158,7 +162,7 @@ public class MainViewModel : ViewModelBase
     {
         try
         {
-            await UpdatePassword();
+            if (!await UpdatePassword()) return;
             ShowTerminal($"Updating {Provider!.Name}", action =>
             {
                 var exitCode = Provider.Update(_password, 
@@ -204,13 +208,11 @@ public class MainViewModel : ViewModelBase
         });
     }
 
-    private async Task UpdatePassword()
+    private async Task<bool> UpdatePassword()
     {
-        if (Provider is {RootRequired: false} || _password != null) return;
+        if (Provider is {RootRequired: false} || _password != null) return true;
         _password = await ShowPassword.Handle(new PasswordViewModel());
-        if (_password == null)
-            await MessageBoxManager.GetMessageBoxStandardWindow("A error has occurred", "Invalid Password. ",
-                ButtonEnum.Ok, Icon.Warning).Show();
+        return _password != null;
     }
 
     public IProvider? Provider

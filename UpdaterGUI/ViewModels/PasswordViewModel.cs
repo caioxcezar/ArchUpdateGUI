@@ -1,5 +1,7 @@
 using System.Reactive;
 using System.Security;
+using MessageBox.Avalonia;
+using MessageBox.Avalonia.Enums;
 using ReactiveUI;
 using UpdaterGUI.Backend;
 
@@ -15,7 +17,12 @@ public class PasswordViewModel : ReactiveObject
         {
             var result = Command.Run($"echo '{Password}' | sudo -S su");
             Command.Run("sudo -k");
-            if (result.ExitCode != 0) return null;
+            if (result.ExitCode != 0)
+            {
+                MessageBoxManager.GetMessageBoxStandardWindow("A error has occurred", "Invalid Password. ",
+                    ButtonEnum.Ok, Icon.Warning).Show();
+                return null;
+            }
             var pass = new SecureString();
             foreach (var c in Password.ToCharArray())
                 pass.AppendChar(c);
