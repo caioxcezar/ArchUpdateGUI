@@ -7,13 +7,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4c932dc5-ae62-468c-b800-bbe31af0a9d5" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.UpdaterGUI/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.UpdaterGUI/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UpdaterGUI/ViewModels/MainViewModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/UpdaterGUI/ViewModels/MainViewModel.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UpdaterGUI/ViewModels/PasswordViewModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/UpdaterGUI/ViewModels/PasswordViewModel.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UpdaterGUI/Views/MainWindow.axaml" beforeDir="false" afterPath="$PROJECT_DIR$/UpdaterGUI/Views/MainWindow.axaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UpdaterGUI/Views/PasswordWindow.axaml" beforeDir="false" afterPath="$PROJECT_DIR$/UpdaterGUI/Views/PasswordWindow.axaml" afterDir="false" />
-    </list>
+    <list default="true" id="4c932dc5-ae62-468c-b800-bbe31af0a9d5" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -22,6 +16,7 @@
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/0911bf4c34584f72b3a5df63353953807a400/ec/b7bae4ab/Regex.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/561ced8b57494f62b40e74b63cdb198d94ac00/e3/7dad570d/ThrowHelper.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///home/caior/RiderProjects/UpdaterGUI/UpdaterGUI/ViewModels/MainViewModel.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -93,6 +88,7 @@
       <workItem from="1652634897068" duration="422000" />
       <workItem from="1652635395619" duration="141000" />
       <workItem from="1652638949232" duration="260000" />
+      <workItem from="1652639223969" duration="137000" />
     </task>
     <task id="LOCAL-00001" summary="- Atualizar imagem.&#10;- Code">
       <created>1650918083410</created>
@@ -115,7 +111,14 @@
       <option name="project" value="LOCAL" />
       <updated>1651798219165</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Removido mensagem de senha incorreta ao fechar prompt. &#10;Erro ao remover e instalar múltiplos pacotes.">
+      <created>1652639313529</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1652639313529</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -140,7 +143,8 @@
     <MESSAGE value="- Atualizar imagem.&#10;- Code" />
     <MESSAGE value="Add Paru, bug ao atualizar todos os pacotes" />
     <MESSAGE value="Desativar botão de update quando não tem repositório selecionádo." />
-    <option name="LAST_COMMIT_MESSAGE" value="Desativar botão de update quando não tem repositório selecionádo." />
+    <MESSAGE value="Removido mensagem de senha incorreta ao fechar prompt. &#10;Erro ao remover e instalar múltiplos pacotes." />
+    <option name="LAST_COMMIT_MESSAGE" value="Removido mensagem de senha incorreta ao fechar prompt. &#10;Erro ao remover e instalar múltiplos pacotes." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

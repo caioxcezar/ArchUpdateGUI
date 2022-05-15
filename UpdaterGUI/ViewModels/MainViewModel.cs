@@ -187,12 +187,7 @@ public class MainViewModel : ViewModelBase
         if (Providers.FirstOrDefault(p => p.RootRequired) != null && _password == null)
         {
             _password = await ShowPassword.Handle(new PasswordViewModel());
-            if (_password == null)
-            {
-                await MessageBoxManager.GetMessageBoxStandardWindow("A error has occurred", "Invalid Password. ",
-                    ButtonEnum.Ok, Icon.Warning).Show();
-                return;
-            }
+            if (_password == null) return;
         }
         ShowTerminal("Updating",action =>
         {
