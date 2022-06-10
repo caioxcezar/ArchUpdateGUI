@@ -26,7 +26,7 @@ public class Paru : IProvider
                 var p = package.Split(' ');
                 return new Package
                 {
-                    Provider = "yay",
+                    Provider = "paru",
                     Repository = p[0],
                     Name = p[1],
                     Version = p[2],
