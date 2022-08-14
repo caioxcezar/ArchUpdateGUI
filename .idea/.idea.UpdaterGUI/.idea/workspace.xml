@@ -7,10 +7,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4c932dc5-ae62-468c-b800-bbe31af0a9d5" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.UpdaterGUI/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.UpdaterGUI/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UpdaterGUI.Backend/ProviderImpl/Paru.cs" beforeDir="false" afterPath="$PROJECT_DIR$/UpdaterGUI.Backend/ProviderImpl/Paru.cs" afterDir="false" />
-    </list>
+    <list default="true" id="4c932dc5-ae62-468c-b800-bbe31af0a9d5" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -19,6 +16,7 @@
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/0911bf4c34584f72b3a5df63353953807a400/ec/b7bae4ab/Regex.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/561ced8b57494f62b40e74b63cdb198d94ac00/e3/7dad570d/ThrowHelper.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///home/caior/RiderProjects/UpdaterGUI/UpdaterGUI.Backend/ProviderImpl/Paru.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -100,7 +98,7 @@
       <workItem from="1653794460511" duration="1072000" />
       <workItem from="1653865046450" duration="2431000" />
       <workItem from="1654099220064" duration="1218000" />
-      <workItem from="1654820589829" duration="423000" />
+      <workItem from="1654820589829" duration="735000" />
     </task>
     <task id="LOCAL-00001" summary="- Atualizar imagem.&#10;- Code">
       <created>1650918083410</created>
@@ -137,7 +135,14 @@
       <option name="project" value="LOCAL" />
       <updated>1652658870574</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="change yay to paru in Paru class">
+      <created>1654821296539</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1654821296539</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -164,7 +169,8 @@
     <MESSAGE value="Desativar botão de update quando não tem repositório selecionádo." />
     <MESSAGE value="Removido mensagem de senha incorreta ao fechar prompt. &#10;Erro ao remover e instalar múltiplos pacotes." />
     <MESSAGE value="Removendo mensagem de senha incorreta ao usar updateall" />
-    <option name="LAST_COMMIT_MESSAGE" value="Removendo mensagem de senha incorreta ao usar updateall" />
+    <MESSAGE value="change yay to paru in Paru class" />
+    <option name="LAST_COMMIT_MESSAGE" value="change yay to paru in Paru class" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
